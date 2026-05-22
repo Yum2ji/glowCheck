@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlowCheck – Know What's In Your Beauty Products</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase SDK (compat mode — works with regular scripts) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <style>
+    /* ── Reset & Tokens ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand:    #e75480;   /* deep pink */
+      --brand-lt: #fce4ec;
+      --brand-dk: #c0375b;
+      --safe:     #4caf50;
+      --moderate: #ff9800;
+      --hazard:   #f44336;
+      --bg:       #fafafa;
+      --card:     #ffffff;
+      --border:   #f0e6ea;
+      --text:     #1a1a2e;
+      --muted:    #8a7f87;
+      --radius:   14px;
+      --shadow:   0 2px 16px rgba(231,84,128,.10);
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+    a    { color: inherit; text-decoration: none; }
+    img  { display: block; max-width: 100%; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff; border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 64px;
+      display: flex; align-items: center; gap: 32px;
+      box-shadow: 0 1px 8px rgba(0,0,0,.06);
+    }
+    .nav-logo { font-size: 1.4rem; font-weight: 800; color: var(--brand); letter-spacing: -.5px; }
+    .nav-logo span { color: var(--text); }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { font-size: .9rem; font-weight: 500; color: var(--muted); transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--brand); }
+    .nav-right { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+    .btn-compare {
+      background: var(--brand); color: #fff;
+      border: none; border-radius: 8px; padding: 8px 18px;
+      font-size: .85rem; font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .btn-compare:hover { background: var(--brand-dk); }
+    #compare-badge {
+      display: none; background: var(--brand); color: #fff;
+      border-radius: 50%; width: 20px; height: 20px;
+      font-size: .7rem; font-weight: 700;
+      align-items: center; justify-content: center;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 100%);
+      padding: 72px 24px 56px; text-align: center;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.15; }
+    .hero h1 em { color: var(--brand); font-style: normal; }
+    .hero p { margin: 16px auto 0; max-width: 560px; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+
+    .search-bar {
+      margin: 32px auto 0; max-width: 640px;
+      display: flex; background: #fff;
+      border: 2px solid var(--border); border-radius: 50px;
+      overflow: hidden; box-shadow: var(--shadow);
+    }
+    .search-bar input {
+      flex: 1; border: none; outline: none;
+      padding: 14px 20px; font-size: 1rem;
+    }
+    .search-bar button {
+      background: var(--brand); color: #fff; border: none;
+      padding: 14px 28px; font-size: .95rem; font-weight: 600; cursor: pointer;
+    }
+    .search-bar button:hover { background: var(--brand-dk); }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      display: flex; justify-content: center; gap: 40px;
+      padding: 20px 24px; background: #fff; border-bottom: 1px solid var(--border);
+    }
+    .stat { text-align: center; }
+    .stat .num { font-size: 1.6rem; font-weight: 800; color: var(--brand); }
+    .stat .lbl { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── Layout ── */
+    .layout { display: flex; max-width: 1200px; margin: 0 auto; padding: 32px 24px; gap: 28px; }
+
+    /* ── Sidebar ── */
+    .sidebar { width: 230px; flex-shrink: 0; }
+    .sidebar-section { margin-bottom: 28px; }
+    .sidebar-section h3 {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+    }
+    .category-list { list-style: none; }
+    .category-list li a {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 8px; font-size: .9rem;
+      transition: background .15s, color .15s;
+    }
+    .category-list li a:hover, .category-list li a.active {
+      background: var(--brand-lt); color: var(--brand-dk); font-weight: 600;
+    }
+    .category-list li a .icon { font-size: 1rem; }
+
+    /* EWG Filter */
+    .ewg-filter { display: flex; flex-direction: column; gap: 8px; }
+    .ewg-chip {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 12px; border-radius: 8px; cursor: pointer;
+      font-size: .88rem; transition: background .15s;
+    }
+    .ewg-chip input { accent-color: var(--brand); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-safe     { background: var(--safe); }
+    .dot-moderate { background: var(--moderate); }
+    .dot-hazard   { background: var(--hazard); }
+    .ewg-chip:hover { background: #f9f0f3; }
+
+    /* Price range */
+    .price-range { display: flex; gap: 8px; align-items: center; }
+    .price-range input[type=number] {
+      width: 80px; border: 1px solid var(--border); border-radius: 8px;
+      padding: 6px 10px; font-size: .88rem; outline: none;
+    }
+    .price-range input:focus { border-color: var(--brand); }
+    .btn-apply-filter {
+      width: 100%; margin-top: 10px;
+      background: var(--brand); color: #fff; border: none;
+      border-radius: 8px; padding: 9px; font-size: .88rem;
+      font-weight: 600; cursor: pointer;
+    }
+
+    /* ── Skin & Hair Profile Panel ── */
+    .profile-header {
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; user-select: none;
+    }
+    .profile-toggle { font-size: .75rem; color: var(--muted); transition: transform .2s; }
+    .profile-group { margin-top: 12px; }
+    .profile-label {
+      font-size: .7rem; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px;
+    }
+    .skin-type-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+    .skin-type-btn {
+      padding: 4px 11px; border-radius: 20px; font-size: .78rem;
+      border: 1.5px solid var(--border); background: #fff; color: var(--muted);
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .skin-type-btn input { display: none; }
+    .skin-type-btn.selected {
+      background: var(--brand-lt); border-color: var(--brand);
+      color: var(--brand); font-weight: 600;
+    }
+    .concern-list { display: flex; flex-direction: column; gap: 4px; }
+    .concern-chip {
+      display: flex; align-items: center; gap: 7px;
+      padding: 5px 10px; border-radius: 8px; font-size: .8rem;
+      border: 1.5px solid var(--border); background: #fff; color: var(--muted);
+      cursor: pointer; transition: all .15s;
+    }
+    .concern-chip:hover { border-color: var(--brand); color: var(--text); }
+    .concern-chip.selected {
+      background: var(--brand-lt); border-color: var(--brand); color: var(--brand-dk);
+    }
+    .concern-chip input { accent-color: var(--brand); width: 13px; height: 13px; margin: 0; }
+    .avoid-textarea {
+      width: 100%; padding: 7px 10px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: .8rem; font-family: inherit;
+      color: var(--text); background: #fff; resize: vertical; min-height: 56px;
+    }
+    .avoid-textarea:focus { outline: none; border-color: var(--brand); }
+    .avoid-textarea::placeholder { color: var(--muted); }
+    .profile-active-badge {
+      background: #fff3cd; border: 1px solid #ffc107; color: #856404;
+      padding: 6px 10px; border-radius: 8px; font-size: .76rem; font-weight: 600;
+      text-align: center; margin-top: 8px;
+    }
+    .btn-clear-profile {
+      width: 100%; padding: 7px; background: #f4f4f6; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 8px; font-size: .82rem;
+      cursor: pointer; font-family: inherit; margin-top: 6px;
+    }
+    .btn-clear-profile:hover { background: #e9e9ef; }
+
+    /* ── Main grid ── */
+    .main { flex: 1; min-width: 0; }
+    .toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .toolbar-tabs { display: flex; gap: 8px; }
+    .tab {
+      padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+      font-size: .85rem; font-weight: 500; cursor: pointer; background: #fff;
+      transition: all .2s;
+    }
+    .tab.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .sort-select {
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 7px 12px; font-size: .85rem; outline: none; background: #fff;
+    }
+    .sort-select:focus { border-color: var(--brand); }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    /* Product Card */
+    .product-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer; position: relative;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .product-card .img-wrap {
+      aspect-ratio: 1; background: #fdf4f6;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .product-card img { width: 100%; height: 100%; object-fit: cover; }
+    .product-card .img-placeholder { font-size: 2.5rem; }
+    .product-card .card-body { padding: 12px 14px 14px; }
+    .product-card .brand { font-size: .72rem; color: var(--muted); margin-bottom: 3px; }
+    .product-card .name  { font-size: .88rem; font-weight: 600; line-height: 1.35; }
+    .product-card .price-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px;
+    }
+    .product-card .price { font-size: 1rem; font-weight: 700; color: var(--brand); }
+    .ewg-badge {
+      font-size: .7rem; font-weight: 700; padding: 3px 8px;
+      border-radius: 20px; color: #fff;
+    }
+    .ewg-safe     { background: var(--safe); }
+    .ewg-moderate { background: var(--moderate); }
+    .ewg-hazard   { background: var(--hazard); }
+    .ewg-unknown  { background: #9e9e9e; }
+    .retailer-tag {
+      font-size: .65rem; background: #f3e5f5; color: #7b1fa2;
+      padding: 2px 7px; border-radius: 10px; font-weight: 600;
+    }
+    .compare-toggle {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(255,255,255,.85); border: 1.5px solid var(--border);
+      border-radius: 6px; padding: 4px 8px; font-size: .7rem;
+      font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .compare-toggle.selected { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 200;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 20px; max-width: 760px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+    .modal-header {
+      position: sticky; top: 0; background: #fff;
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 16px; z-index: 1;
+    }
+    .modal-img {
+      width: 80px; height: 80px; border-radius: 12px;
+      object-fit: cover; background: #fdf4f6; flex-shrink: 0;
+    }
+    .modal-title-block h2 { font-size: 1.2rem; font-weight: 700; }
+    .modal-title-block .brand { font-size: .85rem; color: var(--muted); margin-bottom: 6px; }
+    .modal-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+    .modal-close {
+      margin-left: auto; background: none; border: none;
+      font-size: 1.4rem; cursor: pointer; color: var(--muted); line-height: 1;
+    }
+    .modal-body { padding: 24px; }
+    .modal-section { margin-bottom: 24px; }
+    .modal-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+    .modal-actions { display: flex; gap: 12px; }
+    .btn-primary {
+      background: var(--brand); color: #fff; border: none;
+      border-radius: 10px; padding: 11px 22px; font-size: .9rem;
+      font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .btn-primary:hover { background: var(--brand-dk); }
+    .btn-secondary {
+      background: var(--brand-lt); color: var(--brand-dk); border: none;
+      border-radius: 10px; padding: 11px 22px; font-size: .9rem;
+      font-weight: 600; cursor: pointer;
+    }
+
+    /* Ingredient list in modal */
+    .ingredient-list { display: flex; flex-direction: column; gap: 8px; }
+    .ingredient-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-radius: 10px;
+      background: #fafafa; border: 1px solid var(--border);
+      transition: background .15s; cursor: pointer;
+    }
+    .ingredient-row:hover { background: var(--brand-lt); }
+    .ing-pos  { font-size: .72rem; color: var(--muted); min-width: 22px; }
+    .ing-name { font-size: .9rem; font-weight: 500; flex: 1; }
+    .ing-func { font-size: .75rem; color: var(--muted); }
+    .ewg-score-pill {
+      font-size: .72rem; font-weight: 700; padding: 3px 9px;
+      border-radius: 20px; color: #fff; min-width: 32px; text-align: center;
+    }
+
+    /* EWG Score meter */
+    .ewg-meter { display: flex; gap: 4px; margin: 8px 0; }
+    .ewg-meter-block {
+      flex: 1; height: 8px; border-radius: 4px; background: #f0e6ea;
+    }
+    .ewg-meter-block.filled-safe     { background: var(--safe); }
+    .ewg-meter-block.filled-moderate { background: var(--moderate); }
+    .ewg-meter-block.filled-hazard   { background: var(--hazard); }
+
+    /* Compare panel */
+    .compare-panel {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+      background: #fff; border-top: 2px solid var(--brand);
+      padding: 16px 24px; box-shadow: 0 -4px 24px rgba(0,0,0,.12);
+    }
+    .compare-panel.open { display: block; }
+    .compare-panel-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .compare-panel h4 { font-weight: 700; flex-shrink: 0; }
+    .compare-items { display: flex; gap: 12px; flex: 1; overflow-x: auto; }
+    .compare-item {
+      background: var(--brand-lt); border-radius: 8px;
+      padding: 6px 12px; font-size: .82rem; font-weight: 500;
+      white-space: nowrap; display: flex; align-items: center; gap: 8px;
+    }
+    .compare-item button {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 1rem; line-height: 1;
+    }
+
+    /* Compare modal */
+    .compare-modal {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.5); overflow-y: auto; padding: 24px;
+    }
+    .compare-modal.open { display: block; }
+    .compare-modal-inner {
+      background: #fff; border-radius: 20px; max-width: 1100px;
+      margin: 0 auto; padding: 28px;
+    }
+    .compare-table { width: 100%; border-collapse: collapse; }
+    .compare-table th, .compare-table td {
+      padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid var(--border); font-size: .88rem;
+    }
+    .compare-table th { font-weight: 700; background: var(--brand-lt); }
+    .compare-table td:first-child { font-weight: 600; color: var(--muted); }
+
+    /* Loader */
+    .loader { text-align: center; padding: 60px; color: var(--muted); }
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--border);
+      border-top-color: var(--brand); border-radius: 50%;
+      animation: spin .7s linear infinite; margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 90px; right: 24px; z-index: 400;
+      background: var(--text); color: #fff; border-radius: 10px;
+      padding: 12px 20px; font-size: .88rem; font-weight: 500;
+      transform: translateY(20px); opacity: 0; transition: all .3s;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* Pagination */
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 32px; }
+    .page-btn {
+      padding: 8px 14px; border: 1.5px solid var(--border);
+      border-radius: 8px; background: #fff; cursor: pointer; font-size: .88rem;
+      transition: all .15s;
+    }
+    .page-btn:hover, .page-btn.active {
+      background: var(--brand); color: #fff; border-color: var(--brand);
+    }
+    .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 32px 24px;
+      border-top: 1px solid var(--border); color: var(--muted); font-size: .82rem;
+    }
+    footer strong { color: var(--brand); }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .stats-strip { gap: 20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Glow<span>Check</span></div>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="setView('products')">Products</a>
+    <a href="#" onclick="setView('ingredients')">Ingredients</a>
+    <a href="#" onclick="openCrawlPanel()">Update Data</a>
+  </div>
+  <div class="nav-right">
+    <div id="compare-badge"></div>
+    <button class="btn-compare" onclick="openCompareModal()">⚖️ Compare (<span id="compare-count">0</span>)</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Know <em>exactly</em> what's<br>in your beauty products</h1>
+  <p>Search 10,000+ US skincare & makeup products. Check every ingredient, see EWG safety scores, and compare prices across Sephora & Ulta.</p>
+  <div class="search-bar">
+    <input id="search-input" type="text" placeholder="Search products or ingredients… e.g. Niacinamide, Retinol, Cerave" autocomplete="off">
+    <button onclick="doSearch()">Search</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip" id="stats-strip">
+  <div class="stat"><div class="num" id="stat-products">–</div><div class="lbl">Products</div></div>
+  <div class="stat"><div class="num" id="stat-ingredients">–</div><div class="lbl">Ingredients</div></div>
+  <div class="stat"><div class="num" id="stat-brands">–</div><div class="lbl">Brands</div></div>
+  <div class="stat"><div class="num" id="stat-ewg">–</div><div class="lbl">Avg EWG Score</div></div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>Category</h3>
+      <ul class="category-list" id="cat-list">
+        <li><a href="#" class="active" onclick="filterCat('')"><span class="icon">✨</span> All</a></li>
+        <li><a href="#" onclick="filterCat('skincare')"><span class="icon">💧</span> Skincare</a></li>
+        <li><a href="#" onclick="filterCat('makeup')"><span class="icon">💄</span> Makeup</a></li>
+        <li><a href="#" onclick="filterCat('suncare')"><span class="icon">☀️</span> Suncare</a></li>
+        <li><a href="#" onclick="filterCat('haircare')"><span class="icon">💇</span> Haircare</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>EWG Safety</h3>
+      <div class="ewg-filter">
+        <label class="ewg-chip">
+          <input type="checkbox" id="ewg-safe" checked>
+          <span class="dot dot-safe"></span> Safe (1–2)
+        </label>
+        <label class="ewg-chip">
+          <input type="checkbox" id="ewg-moderate" checked>
+          <span class="dot dot-moderate"></span> Moderate (3–6)
+        </label>
+        <label class="ewg-chip">
+          <input type="checkbox" id="ewg-hazard" checked>
+          <span class="dot dot-hazard"></span> Hazardous (7–10)
+        </label>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Price Range (USD)</h3>
+      <div class="price-range">
+        <input type="number" id="min-price" placeholder="$0" min="0">
+        <span>–</span>
+        <input type="number" id="max-price" placeholder="$500" min="0">
+      </div>
+      <button class="btn-apply-filter" onclick="applyFilters()">Apply Filters</button>
+    </div>
+
+    <div class="sidebar-section">
+      <h3>Retailer</h3>
+      <ul class="category-list">
+        <li><a href="#" onclick="filterRetailer('')">All Stores</a></li>
+        <li><a href="#" onclick="filterRetailer('sephora')">Sephora</a></li>
+        <li><a href="#" onclick="filterRetailer('ulta')">Ulta</a></li>
+        <li><a href="#" onclick="filterRetailer('amazon')">Amazon</a></li>
+      </ul>
+    </div>
+
+    <!-- SKIN & HAIR PROFILE -->
+    <div class="sidebar-section">
+      <h3 class="profile-header" onclick="toggleProfile()">
+        Skin &amp; Hair Profile
+        <span class="profile-toggle" id="profile-toggle">▾</span>
+      </h3>
+      <div id="profile-body">
+
+        <div class="profile-group">
+          <div class="profile-label">Skin Type</div>
+          <div class="skin-type-grid">
+            <label class="skin-type-btn selected" id="st-btn-"><input type="radio" name="skin-type" value="" checked onchange="setSkinType('')"> All</label>
+            <label class="skin-type-btn" id="st-btn-dry"><input type="radio" name="skin-type" value="dry" onchange="setSkinType('dry')"> Dry</label>
+            <label class="skin-type-btn" id="st-btn-oily"><input type="radio" name="skin-type" value="oily" onchange="setSkinType('oily')"> Oily</label>
+            <label class="skin-type-btn" id="st-btn-combination"><input type="radio" name="skin-type" value="combination" onchange="setSkinType('combination')"> Combo</label>
+            <label class="skin-type-btn" id="st-btn-sensitive"><input type="radio" name="skin-type" value="sensitive" onchange="setSkinType('sensitive')"> Sensitive</label>
+            <label class="skin-type-btn" id="st-btn-normal"><input type="radio" name="skin-type" value="normal" onchange="setSkinType('normal')"> Normal</label>
+          </div>
+        </div>
+
+        <div class="profile-group">
+          <div class="profile-label">Skin Concerns — ingredients to avoid</div>
+          <div class="concern-list">
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="dry_skin"> Dry Skin</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="acne_prone"> Acne-prone</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="eczema_atopic"> Eczema / Atopic</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="rosacea"> Rosacea</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="sun_sensitive"> Sun-sensitive</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="acid_sensitive"> Acid-sensitive</label>
+          </div>
+        </div>
+
+        <div class="profile-group">
+          <div class="profile-label">Hair Concerns — ingredients to avoid</div>
+          <div class="concern-list">
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="fine_hair"> Fine / Thin hair</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="hair_loss"> Hair Loss / Thinning</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="scalp_sensitive"> Sensitive Scalp</label>
+            <label class="concern-chip"><input type="checkbox" class="concern-cb" value="curly_hair"> Curly / Coily hair</label>
+          </div>
+        </div>
+
+        <div class="profile-group">
+          <div class="profile-label">또는 직접 입력 — 피해야 할 성분 (쉼표 구분)</div>
+          <textarea id="avoid-ingredients-input" class="avoid-textarea"
+            placeholder="e.g. Fragrance, Retinol, Lactic Acid"></textarea>
+        </div>
+
+        <button class="btn-apply-filter" onclick="applyProfile()">Apply Profile</button>
+        <button class="btn-clear-profile" onclick="clearProfile()">Clear Profile</button>
+        <div id="profile-active-badge" style="display:none" class="profile-active-badge">
+          Profile filter active — some products hidden
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="toolbar">
+      <div class="toolbar-tabs">
+        <button class="tab active" onclick="switchTab('products', this)">Products</button>
+        <button class="tab" onclick="switchTab('ingredients', this)">Ingredients</button>
+      </div>
+      <select class="sort-select" id="sort-select" onchange="applyFilters()">
+        <option value="rating">Top Rated</option>
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </div>
+
+    <div id="main-content">
+      <div class="loader"><div class="spinner"></div>Loading…</div>
+    </div>
+    <div id="pagination"></div>
+  </main>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <img class="modal-img" id="m-img" src="" alt="">
+      <div class="modal-title-block">
+        <div class="brand" id="m-brand"></div>
+        <h2 id="m-name"></h2>
+        <div class="modal-meta" id="m-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>Safety Overview</h3>
+        <div id="m-ewg-overview"></div>
+      </div>
+      <div class="modal-section">
+        <h3>Full Ingredient List</h3>
+        <div class="ingredient-list" id="m-ingredients"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-actions" id="m-actions"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE PANEL -->
+<div class="compare-panel" id="compare-panel">
+  <div class="compare-panel-inner">
+    <h4>Compare:</h4>
+    <div class="compare-items" id="compare-items-list"></div>
+    <button class="btn-primary" onclick="openCompareModal()">⚖️ Compare Now</button>
+    <button class="btn-secondary" onclick="clearCompare()">Clear</button>
+  </div>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="compare-modal" id="compare-modal">
+  <div class="compare-modal-inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2>Product Comparison</h2>
+      <button class="modal-close" onclick="document.getElementById('compare-modal').classList.remove('open')" style="font-size:1.6rem">✕</button>
+    </div>
+    <div id="compare-modal-content"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>GlowCheck</strong> — Ingredient transparency for every beauty lover.<br>
+  Safety data sourced from <a href="https://www.ewg.org/skindeep/" target="_blank" style="color:var(--brand)">EWG Skin Deep</a>.
+  Prices from Sephora & Ulta. Not affiliated with any brand.
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   Firebase 초기화
+═══════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey:            "AIzaSyBqHc70U84bTyy59T8u2qZAUTY8wzNeALI",
+  authDomain:        "glowcheck-b8a8e.firebaseapp.com",
+  projectId:         "glowcheck-b8a8e",
+  storageBucket:     "glowcheck-b8a8e.firebasestorage.app",
+  messagingSenderId: "659826060530",
+  appId:             "1:659826060530:web:21d74a395e311864c5746b",
+  measurementId:     "G-D27E2K4V9Y"
+};
+firebase.initializeApp(firebaseConfig);
+const fsdb    = firebase.firestore();
+const fsauth  = firebase.auth();
+const fsstorage = firebase.storage();
+
+/* ── Firestore 캐시 ── */
+let _allProducts    = null;   // [{id, name, brand, ...}]
+let _allIngredients = null;   // [{id, name, ewg_score, ...}]
+
+async function ensureDataLoaded() {
+  if (!_allProducts) {
+    const snap = await fsdb.collection('products').get();
+    _allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+  if (!_allIngredients) {
+    const snap = await fsdb.collection('ingredients').get();
+    _allIngredients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   State
+═══════════════════════════════════════════════════ */
+const API = '';  // same origin (admin crawl endpoint 전용)
+let state = {
+  tab              : 'products',
+  q                : '',
+  category         : '',
+  retailer         : '',
+  sort             : 'rating',
+  page             : 1,
+  minPrice         : null,
+  maxPrice         : null,
+  avoidConcerns    : [],
+  avoidIngredients : [],
+};
+let compareSet = new Map();   // id → product object
+let currentProductId = null;
+
+/* ═══════════════════════════════════════════════════
+   Boot
+═══════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadStats();
+  loadProducts();
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+});
+
+/* ═══════════════════════════════════════════════════
+   Stats
+═══════════════════════════════════════════════════ */
+async function loadStats() {
+  try {
+    await ensureDataLoaded();
+    const prods = _allProducts;
+    const ings  = _allIngredients;
+    const brands = new Set(prods.map(p => p.brand).filter(Boolean)).size;
+    const scores = prods.map(p => p.avg_ewg).filter(v => v != null);
+    const avgEwg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–';
+    document.getElementById('stat-products').textContent    = fmtNum(prods.length);
+    document.getElementById('stat-ingredients').textContent = fmtNum(ings.length);
+    document.getElementById('stat-brands').textContent      = fmtNum(brands);
+    document.getElementById('stat-ewg').textContent         = avgEwg;
+  } catch(e) { console.warn('loadStats:', e); }
+}
+
+/* ═══════════════════════════════════════════════════
+   Products  (Firestore 캐시에서 클라이언트 필터링)
+═══════════════════════════════════════════════════ */
+async function loadProducts() {
+  setLoading();
+  await ensureDataLoaded();
+
+  let items = [..._allProducts];
+  const perPage = 24;
+
+  // 텍스트 검색
+  if (state.q) {
+    const q = state.q.toLowerCase();
+    items = items.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      (p.brand && p.brand.toLowerCase().includes(q))
+    );
+  }
+  // 카테고리
+  if (state.category) items = items.filter(p => p.category === state.category);
+  // 리테일러
+  if (state.retailer)  items = items.filter(p => p.retailer  === state.retailer);
+  // 가격
+  if (state.minPrice != null) items = items.filter(p => (p.price||0) >= state.minPrice);
+  if (state.maxPrice != null) items = items.filter(p => (p.price||0) <= state.maxPrice);
+
+  // EWG 체크박스
+  const safe     = state.ewgSafe     ?? true;
+  const moderate = state.ewgModerate ?? true;
+  const hazard   = state.ewgHazard   ?? true;
+  if (!(safe && moderate && hazard)) {
+    if (!safe && !moderate && !hazard) { renderProducts({ products:[], total:0, page:1, per_page:perPage }); return; }
+    items = items.filter(p => {
+      const s = p.avg_ewg;
+      if (s == null) return true;
+      if (safe     && s <= 2) return true;
+      if (moderate && s > 2 && s <= 6) return true;
+      if (hazard   && s > 6) return true;
+      return false;
+    });
+  }
+
+  // 피부/모발 concern 필터 (pre-computed triggered_concerns 활용)
+  if (state.avoidConcerns.length) {
+    items = items.filter(p =>
+      !(p.triggered_concerns || []).some(c => state.avoidConcerns.includes(c))
+    );
+  }
+
+  // 직접 입력 성분 회피
+  if (state.avoidIngredients.length) {
+    items = items.filter(p =>
+      !(p.ingredient_names || []).some(n =>
+        state.avoidIngredients.some(a => n.toLowerCase().includes(a.toLowerCase()))
+      )
+    );
+  }
+
+  // 정렬
+  const sort = state.sort || 'rating';
+  items.sort((a,b) => {
+    if (sort === 'rating')     return (b.rating||0) - (a.rating||0);
+    if (sort === 'price_asc')  return (a.price||0)  - (b.price||0);
+    if (sort === 'price_desc') return (b.price||0)  - (a.price||0);
+    if (sort === 'name')       return a.name.localeCompare(b.name);
+    return 0;
+  });
+
+  // 페이지네이션
+  const total = items.length;
+  const start = (state.page - 1) * perPage;
+  renderProducts({ products: items.slice(start, start+perPage), total, page: state.page, per_page: perPage });
+}
+
+function renderProducts(data) {
+  const { products, total, page, per_page } = data;
+  const main = document.getElementById('main-content');
+
+  if (!products || products.length === 0) {
+    main.innerHTML = `<div class="loader">😕 No products found. Try adjusting your filters.</div>`;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  main.innerHTML = `<div class="product-grid">${products.map(productCard).join('')}</div>`;
+  renderPagination(total, page, per_page);
+}
+
+function productCard(p) {
+  const ewgClass = ewgBadgeClass(p.avg_ewg);
+  const ewgLabel = p.avg_ewg ? `EWG ${p.avg_ewg}` : 'N/A';
+  const retailerLabel = p.retailer ? `<span class="retailer-tag">${cap(p.retailer)}</span>` : '';
+  const price = p.price ? `$${parseFloat(p.price).toFixed(2)}` : 'N/A';
+  const img = p.image_url
+    ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}" loading="lazy" onerror="this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>💄</span>'">`
+    : `<span class="img-placeholder">💄</span>`;
+  const isSelected = compareSet.has(p.id) ? 'selected' : '';
+
+  return `
+  <div class="product-card" onclick="openProduct(${p.id})">
+    <div class="img-wrap">${img}</div>
+    <button class="compare-toggle ${isSelected}" onclick="event.stopPropagation();toggleCompare(${p.id})" title="Add to compare">
+      ${compareSet.has(p.id) ? '✓ Added' : '+ Compare'}
+    </button>
+    <div class="card-body">
+      <div class="brand">${escHtml(p.brand || '')}</div>
+      <div class="name">${escHtml(p.name)}</div>
+      <div class="price-row">
+        <span class="price">${price}</span>
+        <span class="ewg-badge ${ewgClass}">${ewgLabel}</span>
+      </div>
+      <div style="margin-top:6px">${retailerLabel}</div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   Ingredients tab  (Firestore 캐시)
+═══════════════════════════════════════════════════ */
+async function loadIngredients() {
+  setLoading();
+  await ensureDataLoaded();
+
+  let items = [..._allIngredients];
+  const perPage = 30;
+
+  // 텍스트 검색
+  if (state.q) {
+    const q = state.q.toLowerCase();
+    items = items.filter(i =>
+      i.name.toLowerCase().includes(q) ||
+      (i.inci_name  && i.inci_name.toLowerCase().includes(q)) ||
+      (i.function   && i.function.toLowerCase().includes(q))
+    );
+  }
+
+  // EWG 범위 필터
+  const safe = state.ewgSafe ?? true, moderate = state.ewgModerate ?? true, hazard = state.ewgHazard ?? true;
+  if (!(safe && moderate && hazard)) {
+    if (!safe && !moderate && !hazard) { renderIngredients({ ingredients:[], total:0, page:1 }); return; }
+    items = items.filter(i => {
+      const s = i.ewg_score;
+      if (s == null) return true;
+      if (safe     && s <= 2) return true;
+      if (moderate && s > 2 && s <= 6) return true;
+      if (hazard   && s > 6) return true;
+      return false;
+    });
+  }
+
+  // EWG 오름차순
+  items.sort((a,b) => (a.ewg_score??99) - (b.ewg_score??99));
+
+  const total = items.length;
+  const start = (state.page - 1) * perPage;
+  // renderIngredients 는 ing.id 가 필요 — Firestore doc id를 순번 대신 사용
+  renderIngredients({ ingredients: items.slice(start, start+perPage), total, page: state.page });
+}
+
+function renderIngredients(data) {
+  const { ingredients, total, page } = data;
+  const main = document.getElementById('main-content');
+
+  if (!ingredients || ingredients.length === 0) {
+    main.innerHTML = `<div class="loader">😕 No ingredients found.</div>`;
+    return;
+  }
+
+  main.innerHTML = `<div class="ingredient-list">
+    ${ingredients.map(ing => `
+      <div class="ingredient-row" onclick="openIngredient('${ing.id}')">
+        <div class="ing-pos">#${ing.id}</div>
+        <div class="ing-name">${escHtml(ing.name)}</div>
+        <div class="ing-func">${escHtml(ing.function || '')}</div>
+        <span class="ewg-score-pill ${ewgBadgeClass(ing.ewg_score)}">${ing.ewg_score ?? '?'}</span>
+      </div>
+    `).join('')}
+  </div>`;
+  renderPagination(total, page, 30);
+}
+
+/* ═══════════════════════════════════════════════════
+   Product detail modal
+═══════════════════════════════════════════════════ */
+async function openProduct(id) {
+  currentProductId = id;
+  document.getElementById('product-modal').classList.add('open');
+  document.getElementById('m-ingredients').innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  document.getElementById('m-ewg-overview').innerHTML = '';
+
+  await ensureDataLoaded();
+  const p = _allProducts.find(x => x.id === String(id)) || await fsdb.collection('products').doc(String(id)).get().then(d => d.exists ? {id:d.id,...d.data()} : null);
+  if (!p) { closeModal(); return; }
+
+  document.getElementById('m-img').src   = p.image_url || '';
+  document.getElementById('m-brand').textContent = p.brand || '';
+  document.getElementById('m-name').textContent  = p.name;
+
+  const ewgClass = ewgBadgeClass(p.avg_ewg);
+  document.getElementById('m-meta').innerHTML = `
+    <span class="ewg-badge ${ewgClass}">${p.avg_ewg ? 'EWG avg ' + p.avg_ewg : 'EWG N/A'}</span>
+    ${p.price ? `<span style="font-weight:700;color:var(--brand)">$${parseFloat(p.price).toFixed(2)}</span>` : ''}
+    ${p.category ? `<span class="retailer-tag">${cap(p.category)}</span>` : ''}
+    ${p.retailer ? `<span class="retailer-tag">${cap(p.retailer)}</span>` : ''}
+  `;
+
+  // EWG meter
+  const score = p.avg_ewg || 0;
+  const blocks = Array.from({length:10}, (_,i) => {
+    const n = i+1;
+    let cls = '';
+    if (n <= score) {
+      cls = n <= 2 ? 'filled-safe' : n <= 6 ? 'filled-moderate' : 'filled-hazard';
+    }
+    return `<div class="ewg-meter-block ${cls}"></div>`;
+  }).join('');
+
+  document.getElementById('m-ewg-overview').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <span style="font-size:2rem;font-weight:800;color:${ewgColor(score)}">${score || '?'}</span>
+      <div>
+        <div style="font-size:.9rem;font-weight:600">${ewgLabel(score)}</div>
+        <div style="font-size:.78rem;color:var(--muted)">Average EWG score across all ingredients</div>
+      </div>
+    </div>
+    <div class="ewg-meter">${blocks}</div>
+    <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:2px">
+      <span>1 Safest</span><span>10 Hazardous</span>
+    </div>
+  `;
+
+  // Ingredient list — Firestore 구조: ingredient_names[], ingredient_ewg[], ingredient_func[], ingredient_pos[]
+  const ingNames = p.ingredient_names || p.ingredients?.map(i=>i.name) || [];
+  const ingEwg   = p.ingredient_ewg   || p.ingredients?.map(i=>i.ewg_score) || [];
+  const ingFunc  = p.ingredient_func  || p.ingredients?.map(i=>i.function||'') || [];
+  const ingPos   = p.ingredient_pos   || p.ingredients?.map((_,i)=>i+1) || [];
+  document.getElementById('m-ingredients').innerHTML = ingNames.length
+    ? ingNames.map((name, i) => `
+        <div class="ingredient-row">
+          <span class="ing-pos">${ingPos[i] ?? i+1}</span>
+          <span class="ing-name">${escHtml(name)}</span>
+          <span class="ing-func">${escHtml(ingFunc[i] || '')}</span>
+          <span class="ewg-score-pill ${ewgBadgeClass(ingEwg[i])}">${ingEwg[i] ?? '?'}</span>
+        </div>
+      `).join('')
+    : '<div style="color:var(--muted);font-size:.88rem">Ingredient list not yet available.</div>';
+
+  // Actions
+  document.getElementById('m-actions').innerHTML = `
+    ${p.product_url ? `<a href="${escHtml(p.product_url)}" target="_blank"><button class="btn-primary">Buy on ${cap(p.retailer||'Store')}</button></a>` : ''}
+    <button class="btn-secondary" onclick="toggleCompare(${p.id});closeModal()">+ Compare</button>
+  `;
+}
+
+function closeModal() {
+  document.getElementById('product-modal').classList.remove('open');
+}
+document.getElementById('product-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('product-modal')) closeModal();
+});
+
+/* ═══════════════════════════════════════════════════
+   Compare
+═══════════════════════════════════════════════════ */
+function toggleCompare(id) {
+  if (compareSet.has(id)) {
+    compareSet.delete(id);
+    showToast('Removed from compare');
+  } else {
+    if (compareSet.size >= 4) { showToast('Max 4 products to compare'); return; }
+    compareSet.set(id, {id, name: '…'});
+    ensureDataLoaded().then(() => {
+      const p = _allProducts.find(x => x.id === String(id));
+      if (p) { compareSet.set(id, p); renderComparePanel(); }
+    });
+    showToast('Added to compare');
+  }
+  renderComparePanel();
+  updateCompareCount();
+}
+
+function renderComparePanel() {
+  const panel = document.getElementById('compare-panel');
+  const list  = document.getElementById('compare-items-list');
+  if (compareSet.size === 0) {
+    panel.classList.remove('open');
+    return;
+  }
+  panel.classList.add('open');
+  list.innerHTML = [...compareSet.values()].map(p => `
+    <div class="compare-item">
+      ${escHtml(p.name || '…')}
+      <button onclick="compareSet.delete(${p.id});renderComparePanel();updateCompareCount()">✕</button>
+    </div>
+  `).join('');
+}
+
+function clearCompare() {
+  compareSet.clear();
+  renderComparePanel();
+  updateCompareCount();
+}
+
+function updateCompareCount() {
+  document.getElementById('compare-count').textContent = compareSet.size;
+}
+
+async function openCompareModal() {
+  if (compareSet.size < 2) { showToast('Select at least 2 products to compare'); return; }
+  await ensureDataLoaded();
+  const idSet = new Set([...compareSet.keys()].map(String));
+  const products = _allProducts.filter(p => idSet.has(String(p.id)));
+
+  const modal = document.getElementById('compare-modal');
+  const content = document.getElementById('compare-modal-content');
+  modal.classList.add('open');
+
+  // Build table
+  const rows = [
+    ['Brand',      p => escHtml(p.brand || '–')],
+    ['Category',   p => cap(p.category || '–')],
+    ['Price',      p => p.price ? `$${parseFloat(p.price).toFixed(2)}` : '–'],
+    ['Retailer',   p => cap(p.retailer || '–')],
+    ['Rating',     p => p.rating ? `⭐ ${p.rating}` : '–'],
+    ['Avg EWG',    p => `<span class="ewg-badge ${ewgBadgeClass(p.avg_ewg)}">${p.avg_ewg ?? 'N/A'}</span>`],
+    ['Ingredients',p => (p.ingredient_names||p.ingredients||[]).length],
+  ];
+
+  const headerCells = products.map(p => `<th>${escHtml(p.name)}</th>`).join('');
+  const bodyRows = rows.map(([label, fn]) => `
+    <tr>
+      <td>${label}</td>
+      ${products.map(p => `<td>${fn(p)}</td>`).join('')}
+    </tr>
+  `).join('');
+
+  content.innerHTML = `
+    <div style="overflow-x:auto">
+      <table class="compare-table">
+        <thead><tr><th></th>${headerCells}</tr></thead>
+        <tbody>${bodyRows}</tbody>
+      </table>
+    </div>
+    <h3 style="margin:20px 0 12px">Ingredient Comparison</h3>
+    ${renderIngredientCompare(products)}
+  `;
+}
+
+function renderIngredientCompare(products) {
+  // All unique ingredients across all products
+  const allIngNames = new Set();
+  products.forEach(p => (p.ingredients||[]).forEach(i => allIngNames.add(i.name)));
+  const sorted = [...allIngNames].slice(0, 40);
+
+  if (sorted.length === 0) return '<p style="color:var(--muted)">No ingredient data available.</p>';
+
+  const headerCells = products.map(p => `<th>${escHtml(p.name)}</th>`).join('');
+  const bodyRows = sorted.map(ingName => {
+    const cells = products.map(p => {
+      const found = (p.ingredients||[]).find(i => i.name === ingName);
+      return found
+        ? `<td style="color:var(--safe)">✓ <span style="font-size:.75rem;color:var(--muted)">${found.ewg_score ?? ''}</span></td>`
+        : `<td style="color:#ddd">–</td>`;
+    }).join('');
+    return `<tr><td>${escHtml(ingName)}</td>${cells}</tr>`;
+  }).join('');
+
+  return `
+    <div style="overflow-x:auto">
+      <table class="compare-table">
+        <thead><tr><th>Ingredient</th>${headerCells}</tr></thead>
+        <tbody>${bodyRows}</tbody>
+      </table>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   Crawl panel
+═══════════════════════════════════════════════════ */
+function openCrawlPanel() {
+  if (!confirm('Trigger a data crawl from Sephora, Ulta, and EWG Skin Deep? This may take a few minutes.')) return;
+  showToast('Crawl started… check console for progress.');
+  apiFetch('/api/crawl', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({source:'all'})})
+    .then(d => { showToast('Crawl complete! Refreshing…'); loadStats(); loadProducts(); })
+    .catch(e => showToast('Crawl error: ' + e.message));
+}
+
+/* ═══════════════════════════════════════════════════
+   Routing / Filters
+═══════════════════════════════════════════════════ */
+function doSearch() {
+  state.q    = document.getElementById('search-input').value.trim();
+  state.page = 1;
+  applyFilters();
+}
+
+/* ═══════════════════════════════════════════════════
+   Skin & Hair Profile
+═══════════════════════════════════════════════════ */
+const SKIN_TYPE_CONCERNS = {
+  'dry':         ['dry_skin'],
+  'oily':        ['acne_prone'],
+  'combination': ['acne_prone'],
+  'sensitive':   ['eczema_atopic', 'rosacea'],
+  'normal':      [],
+  '':            [],
+};
+
+function toggleProfile() {
+  const body   = document.getElementById('profile-body');
+  const toggle = document.getElementById('profile-toggle');
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  toggle.textContent = hidden ? '▾' : '▸';
+}
+
+function setSkinType(type) {
+  document.querySelectorAll('.skin-type-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById(`st-btn-${type}`).classList.add('selected');
+  const autoConcerns = SKIN_TYPE_CONCERNS[type] || [];
+  document.querySelectorAll('.concern-cb').forEach(cb => {
+    cb.checked = autoConcerns.includes(cb.value);
+    cb.closest('.concern-chip').classList.toggle('selected', cb.checked);
+  });
+}
+
+function applyProfile() {
+  const concerns = [...document.querySelectorAll('.concern-cb:checked')].map(cb => cb.value);
+  state.avoidConcerns = concerns;
+  const raw = document.getElementById('avoid-ingredients-input').value.trim();
+  state.avoidIngredients = raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : [];
+  const active = concerns.length > 0 || state.avoidIngredients.length > 0;
+  document.getElementById('profile-active-badge').style.display = active ? 'block' : 'none';
+  state.page = 1;
+  if (state.tab === 'products') loadProducts();
+  else loadIngredients();
+}
+
+function clearProfile() {
+  document.querySelectorAll('.concern-cb').forEach(cb => {
+    cb.checked = false;
+    cb.closest('.concern-chip').classList.remove('selected');
+  });
+  document.getElementById('avoid-ingredients-input').value = '';
+  document.querySelectorAll('.skin-type-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('st-btn-').classList.add('selected');
+  document.querySelector('input[name="skin-type"][value=""]').checked = true;
+  state.avoidConcerns    = [];
+  state.avoidIngredients = [];
+  document.getElementById('profile-active-badge').style.display = 'none';
+  state.page = 1;
+  if (state.tab === 'products') loadProducts();
+}
+
+// concern-chip 클릭 시 selected 스타일 토글
+document.addEventListener('change', e => {
+  if (e.target.classList.contains('concern-cb')) {
+    e.target.closest('.concern-chip').classList.toggle('selected', e.target.checked);
+  }
+});
+
+function filterCat(cat) {
+  state.category = cat;
+  state.page     = 1;
+  document.querySelectorAll('.category-list a').forEach(a => a.classList.remove('active'));
+  event.target.closest('a').classList.add('active');
+  applyFilters();
+}
+
+function filterRetailer(retailer) {
+  state.retailer = retailer;
+  state.page     = 1;
+  applyFilters();
+}
+
+function applyFilters() {
+  state.sort       = document.getElementById('sort-select').value;
+  state.minPrice   = parseFloat(document.getElementById('min-price').value) || null;
+  state.maxPrice   = parseFloat(document.getElementById('max-price').value) || null;
+  state.ewgSafe     = document.getElementById('ewg-safe').checked;
+  state.ewgModerate = document.getElementById('ewg-moderate').checked;
+  state.ewgHazard   = document.getElementById('ewg-hazard').checked;
+  state.page       = 1;
+  if (state.tab === 'products') loadProducts();
+  else loadIngredients();
+}
+
+function switchTab(tab, btn) {
+  state.tab  = tab;
+  state.page = 1;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab === 'products') loadProducts();
+  else loadIngredients();
+}
+
+function setView(v) { /* could expand routing */ }
+
+function setLoading() {
+  document.getElementById('main-content').innerHTML = '<div class="loader"><div class="spinner"></div>Loading…</div>';
+  document.getElementById('pagination').innerHTML   = '';
+}
+
+/* ═══════════════════════════════════════════════════
+   Pagination
+═══════════════════════════════════════════════════ */
+function renderPagination(total, page, perPage) {
+  const pages = Math.ceil(total / perPage);
+  if (pages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+  let html = '';
+  if (page > 1) html += `<button class="page-btn" onclick="goPage(${page-1})">← Prev</button>`;
+  for (let i = Math.max(1, page-2); i <= Math.min(pages, page+2); i++) {
+    html += `<button class="page-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  if (page < pages) html += `<button class="page-btn" onclick="goPage(${page+1})">Next →</button>`;
+  document.getElementById('pagination').innerHTML = `<div class="pagination">${html}</div>`;
+}
+
+function goPage(p) {
+  state.page = p;
+  if (state.tab === 'products') loadProducts();
+  else loadIngredients();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/* ═══════════════════════════════════════════════════
+   Ingredient detail (opens in new tab for now)
+═══════════════════════════════════════════════════ */
+async function openIngredient(id) {
+  await ensureDataLoaded();
+  const ing = _allIngredients.find(x => x.id === String(id)) ||
+              await fsdb.collection('ingredients').doc(String(id)).get().then(d => d.exists ? {id:d.id,...d.data()} : null);
+  if (!ing) return;
+  alert(`${ing.name}\n\nEWG Score: ${ing.ewg_score ?? 'N/A'}\nFunction: ${ing.function || 'N/A'}\n\nDescription:\n${ing.description || 'No description available.'}`);
+}
+
+/* ═══════════════════════════════════════════════════
+   Utils
+═══════════════════════════════════════════════════ */
+async function apiFetch(url, opts = {}) {
+  const r = await fetch(url, opts);
+  if (!r.ok) throw new Error(`API error ${r.status}`);
+  return r.json();
+}
+
+function ewgBadgeClass(score) {
+  if (!score) return 'ewg-unknown';
+  if (score <= 2) return 'ewg-safe';
+  if (score <= 6) return 'ewg-moderate';
+  return 'ewg-hazard';
+}
+
+function ewgColor(score) {
+  if (!score) return '#9e9e9e';
+  if (score <= 2) return 'var(--safe)';
+  if (score <= 6) return 'var(--moderate)';
+  return 'var(--hazard)';
+}
+
+function ewgLabel(score) {
+  if (!score) return 'No data';
+  if (score <= 2) return 'Low Hazard';
+  if (score <= 6) return 'Moderate Hazard';
+  return 'High Hazard';
+}
+
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+function fmtNum(n) { return n ? n.toLocaleString() : '–'; }
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
