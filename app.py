@@ -3,11 +3,14 @@ GlowCheck – US Cosmetic Ingredient Transparency App
 Flask Backend  |  API v1
 """
 
-from flask import Flask, jsonify, request, render_template, abort
+from flask import Flask, jsonify, request, render_template, abort, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from database import get_db, init_db, DB_PATH
 
@@ -106,6 +109,10 @@ def _build_avoid_filter(avoid_concerns: str, avoid_ingredients: str):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/image/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('image', filename)
 
 
 # ─────────────────────────────────────────────────────────
@@ -412,6 +419,137 @@ def trigger_crawl():
         return jsonify({'status': 'ok', 'result': result})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# ─────────────────────────────────────────────────────────
+# API: AI Ingredient Analysis
+# ─────────────────────────────────────────────────────────
+
+@app.route('/api/analyze', methods=['POST'])
+def analyze():
+    """사용자 리뷰 기반 AI 성분 호환성 분석 (Claude API)."""
+    try:
+        import google.generativeai
+    except ImportError:
+        return jsonify({'analysis': 'google-generativeai 패키지가 설치되어 있지 않습니다. pip install google-generativeai'}), 500
+
+    data      = request.json or {}
+    reviews   = data.get('reviews', [])
+    purchased = data.get('purchased', [])
+    skin_profile = data.get('skinProfile', {})
+
+    if not reviews:
+        return jsonify({'analysis': '리뷰 데이터가 없습니다. 제품을 사용하고 리뷰를 남겨주세요.'}), 200
+
+    reviews_text = '\n'.join([
+        f"- {r.get('product_name','')} "
+        f"(Rating: {r.get('rating','?')}/5, Reaction: {r.get('reaction','neutral')}): "
+        f"{r.get('text','(no comment)')}"
+        for r in reviews
+    ])
+
+    all_ingredients: set[str] = set()
+    for p in purchased:
+        all_ingredients.update(p.get('ingredient_names', []))
+    for r in reviews:
+        all_ingredients.update(r.get('ingredient_names', []))
+
+    prompt = f"""You are an expert cosmetic chemist and dermatologist.
+Analyze this user's ingredient compatibility based on their product reviews.
+
+Skin Profile: {json.dumps(skin_profile) if skin_profile else 'Not specified'}
+
+Product Reviews:
+{reviews_text}
+
+Ingredients used across their products: {', '.join(list(all_ingredients)[:60])}
+
+Provide a practical analysis in the same language as the reviews (Korean if reviews are in Korean):
+1. **잘 맞는 성분** — 긍정적인 리뷰와 연관된 성분
+2. **피해야 할 성분** — 부정적인 반응과 연관된 성분
+3. **추천 성분 TOP 5** — 이 사용자에게 맞는 성분
+4. **주의 성분 TOP 5** — 피하면 좋을 성분
+5. **총평** — 피부/모발 타입 및 앞으로의 제품 선택 가이드
+
+Be concise and actionable."""
+
+    api_key = os.environ.get('GEMINI_API_KEY', '')
+    if not api_key:
+        return jsonify({'analysis': 'GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.\n.env 파일에 GEMINI_API_KEY=... 를 추가하세요.'}), 200
+
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+        model    = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(prompt)
+        analysis = response.text
+    except Exception as e:
+        analysis = f'분석 중 오류가 발생했습니다: {e}'
+
+    return jsonify({'analysis': analysis})
+
+
+# ─────────────────────────────────────────────────────────
+# API: Skin Photo Analysis (Gemini Vision)
+# ─────────────────────────────────────────────────────────
+
+@app.route('/api/analyze-skin', methods=['POST'])
+def analyze_skin():
+    """Firebase Storage 사진 URL → Gemini vision → 피부 분석 JSON 반환"""
+    api_key = os.environ.get('GEMINI_API_KEY', '')
+    if not api_key:
+        return jsonify({'error': 'GEMINI_API_KEY not configured'}), 500
+
+    data = request.json or {}
+    image_url = data.get('image_url', '').strip()
+    if not image_url:
+        return jsonify({'error': 'image_url required'}), 400
+
+    try:
+        import requests as req_lib
+        import google.generativeai as genai
+        from PIL import Image
+        import io, re
+
+        img_bytes = req_lib.get(image_url, timeout=20).content
+        img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+
+        prompt = """You are a professional dermatologist and skin analyst.
+Analyze this facial skin photo objectively and return ONLY a JSON object — no markdown, no explanation.
+
+JSON format:
+{
+  "score": <integer 1-10, overall skin health score>,
+  "summary": "<2-3 sentence professional skin assessment>",
+  "hydration": "<one of: low, moderate, good>",
+  "redness": "<one of: none, mild, moderate, high>",
+  "texture": "<one of: smooth, slightly_uneven, uneven, rough>",
+  "pores": "<one of: minimal, moderate, enlarged>",
+  "concerns": ["<up to 4 visible concerns, e.g. dryness, acne, dark_spots, fine_lines>"],
+  "positives": ["<up to 3 positive aspects>"],
+  "recommendations": ["<3-4 specific skincare ingredient or routine recommendations>"]
+}
+
+Be constructive and professional. Return only the JSON."""
+
+        response = model.generate_content([prompt, img])
+        text = response.text.strip()
+
+        match = re.search(r'\{[\s\S]*\}', text)
+        if match:
+            analysis = json.loads(match.group())
+        else:
+            analysis = {'score': 0, 'summary': text, 'concerns': [], 'recommendations': []}
+
+        return jsonify({'analysis': analysis})
+
+    except json.JSONDecodeError as e:
+        return jsonify({'error': f'JSON parse failed: {e}', 'raw': text}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ─────────────────────────────────────────────────────────

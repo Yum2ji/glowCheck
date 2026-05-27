@@ -196,6 +196,105 @@
     }
     .btn-clear-profile:hover { background: #e9e9ef; }
 
+    /* ── Auth ── */
+    .btn-signin {
+      display:flex; align-items:center; gap:7px; background:#fff;
+      border:1.5px solid var(--border); border-radius:8px; padding:7px 14px;
+      font-size:.85rem; font-weight:600; cursor:pointer; color:var(--text); transition:all .15s;
+    }
+    .btn-signin:hover { border-color:var(--brand); color:var(--brand); }
+    .btn-signin img { width:16px; height:16px; }
+    .user-menu { display:flex; align-items:center; gap:9px; position:relative; cursor:pointer; }
+    .user-avatar { width:34px; height:34px; border-radius:50%; border:2px solid var(--brand); object-fit:cover; }
+    .user-name { font-size:.82rem; font-weight:600; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .role-badge { font-size:.62rem; font-weight:700; padding:2px 7px; border-radius:10px; text-transform:uppercase; letter-spacing:.4px; }
+    .role-badge.admin { background:#e8f5e9; color:#2e7d32; }
+    .role-badge.user  { background:var(--brand-lt); color:var(--brand); }
+    .user-dropdown {
+      display:none; position:absolute; top:calc(100% + 8px); right:0;
+      background:#fff; border:1px solid var(--border); border-radius:12px;
+      padding:6px; min-width:160px; box-shadow:0 4px 24px rgba(0,0,0,.12); z-index:300;
+    }
+    .user-dropdown.open { display:block; }
+    .user-dropdown button {
+      display:block; width:100%; text-align:left; padding:8px 12px;
+      border-radius:8px; font-size:.84rem; border:none; background:none;
+      cursor:pointer; color:var(--text); font-family:inherit;
+    }
+    .user-dropdown button:hover { background:var(--brand-lt); color:var(--brand); }
+
+    /* ── My Profile page ── */
+    .profile-hero {
+      display:flex; align-items:center; gap:16px;
+      background:linear-gradient(135deg,#fff0f5,#fce4ec);
+      border-radius:var(--radius); padding:20px; margin-bottom:20px;
+    }
+    .profile-hero img { width:60px; height:60px; border-radius:50%; border:3px solid var(--brand); }
+    .profile-hero-info h2 { font-size:1.15rem; font-weight:700; }
+    .profile-hero-info p  { font-size:.82rem; color:var(--muted); margin-top:2px; }
+    .section-heading {
+      font-size:.95rem; font-weight:700; margin:20px 0 10px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .section-heading .cnt { background:var(--brand-lt); color:var(--brand); font-size:.72rem; font-weight:700; padding:2px 8px; border-radius:10px; }
+    .my-product-item {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 14px; background:#fff; border:1px solid var(--border);
+      border-radius:10px; margin-bottom:7px;
+    }
+    .my-product-item .mp-name { font-size:.86rem; font-weight:600; }
+    .my-product-item .mp-meta { font-size:.74rem; color:var(--muted); margin-top:1px; }
+    .mp-remove { background:none; border:none; cursor:pointer; color:var(--muted); font-size:.95rem; padding:4px 8px; border-radius:6px; }
+    .mp-remove:hover { background:#fee; color:var(--hazard); }
+    .review-item { padding:12px 14px; background:#fff; border:1px solid var(--border); border-radius:10px; margin-bottom:7px; }
+    .review-header { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-bottom:5px; }
+    .review-product { font-size:.86rem; font-weight:600; }
+    .review-stars { color:#f9a825; font-size:.82rem; }
+    .reaction-badge { font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:8px; }
+    .reaction-badge.positive { background:#e8f5e9; color:#2e7d32; }
+    .reaction-badge.negative { background:#fce4ec; color:#c62828; }
+    .reaction-badge.neutral  { background:#f5f5f5; color:#616161; }
+    .review-text { font-size:.81rem; color:var(--muted); }
+    .signin-prompt { text-align:center; padding:60px 20px; color:var(--muted); }
+    .signin-prompt p { margin-bottom:18px; font-size:.92rem; }
+
+    /* ── Review form (in product modal) ── */
+    .review-form { margin-top:16px; border-top:1px solid var(--border); padding-top:16px; }
+    .review-form h4 { font-size:.88rem; font-weight:700; margin-bottom:10px; }
+    .star-row { display:flex; gap:3px; margin-bottom:9px; }
+    .star-btn { background:none; border:none; font-size:1.4rem; cursor:pointer; color:#ddd; transition:color .1s; padding:0; }
+    .star-btn.lit, .star-btn:hover { color:#f9a825; }
+    .reaction-row { display:flex; gap:7px; margin-bottom:9px; }
+    .reaction-btn {
+      flex:1; padding:7px 4px; border-radius:8px; border:1.5px solid var(--border);
+      background:#fff; cursor:pointer; font-size:.78rem; font-weight:600; font-family:inherit; transition:all .15s;
+    }
+    .reaction-btn.positive.sel { background:#e8f5e9; border-color:#4caf50; color:#2e7d32; }
+    .reaction-btn.negative.sel { background:#fce4ec; border-color:#e91e63; color:#c62828; }
+    .reaction-btn.neutral.sel  { background:#f5f5f5; border-color:#9e9e9e; color:#616161; }
+    .review-textarea { width:100%; padding:8px 11px; border:1.5px solid var(--border); border-radius:8px; font-size:.82rem; font-family:inherit; resize:vertical; min-height:65px; }
+    .review-textarea:focus { outline:none; border-color:var(--brand); }
+    .btn-add-own {
+      background:var(--brand-lt); color:var(--brand); border:1.5px solid var(--brand);
+      border-radius:8px; padding:7px 14px; font-size:.82rem; font-weight:600; cursor:pointer; transition:all .15s;
+    }
+    .btn-add-own:hover { background:var(--brand); color:#fff; }
+
+    /* ── AI Analysis ── */
+    .btn-analyze {
+      background:linear-gradient(135deg,#7b1fa2,#9c27b0); color:#fff; border:none;
+      border-radius:10px; padding:12px 24px; font-size:.9rem; font-weight:700;
+      cursor:pointer; width:100%; margin-top:6px; transition:opacity .2s; font-family:inherit;
+    }
+    .btn-analyze:hover { opacity:.9; }
+    .btn-analyze:disabled { opacity:.55; cursor:not-allowed; }
+    .analysis-box {
+      background:linear-gradient(135deg,#f8f0ff,#ede7f6);
+      border:1px solid #d1c4e9; border-radius:var(--radius); padding:18px; margin-top:12px;
+    }
+    .analysis-box h4 { font-size:.9rem; font-weight:700; margin-bottom:10px; color:#4a148c; }
+    .analysis-content { font-size:.83rem; line-height:1.75; white-space:pre-wrap; color:var(--text); }
+
     /* ── Main grid ── */
     .main { flex: 1; min-width: 0; }
     .toolbar {
@@ -418,6 +517,163 @@
       .stats-strip { gap: 20px; }
       .nav-links { display: none; }
     }
+
+    /* ── Skin Diary ── */
+    .skin-diary-header {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:20px; flex-wrap:wrap; gap:12px;
+    }
+    .skin-diary-header h2 { font-size:1.15rem; font-weight:700; }
+    .skin-diary-header p  { font-size:.82rem; color:var(--muted); margin-top:2px; }
+    .btn-upload-photo {
+      display:flex; align-items:center; gap:7px;
+      background:var(--brand); color:#fff; border:none;
+      border-radius:10px; padding:10px 20px; font-size:.88rem; font-weight:600;
+      cursor:pointer; font-family:inherit; transition:background .2s; flex-shrink:0;
+    }
+    .btn-upload-photo:hover { background:var(--brand-dk); }
+    .btn-upload-photo:disabled { opacity:.55; cursor:not-allowed; }
+    .upload-progress {
+      background:#fce4ec; border:1px solid var(--brand); border-radius:10px;
+      padding:14px 18px; margin-bottom:18px; font-size:.85rem; color:var(--brand-dk);
+      display:flex; align-items:center; gap:10px;
+    }
+    .upload-progress .progress-bar-wrap {
+      flex:1; background:#f8bbd0; border-radius:4px; height:6px; overflow:hidden;
+    }
+    .upload-progress .progress-bar { height:100%; background:var(--brand); transition:width .3s; }
+    .skin-photo-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:16px;
+    }
+    .skin-photo-card {
+      border-radius:var(--radius); overflow:hidden; border:1.5px solid var(--border);
+      background:#fff; cursor:pointer; transition:transform .2s, box-shadow .2s; position:relative;
+    }
+    .skin-photo-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+    .skin-photo-card.compare-sel { border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-lt); }
+    .skin-photo-thumb {
+      width:100%; aspect-ratio:1; object-fit:cover; display:block; background:#fdf4f6;
+    }
+    .skin-photo-info { padding:10px 12px; }
+    .skin-photo-date { font-size:.75rem; color:var(--muted); margin-bottom:5px; }
+    .skin-score-row  { display:flex; align-items:center; gap:8px; }
+    .skin-score-num  { font-size:1.1rem; font-weight:800; color:var(--brand); }
+    .skin-score-bar  { flex:1; height:5px; background:#f0e6ea; border-radius:3px; overflow:hidden; }
+    .skin-score-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--brand),#9c27b0); }
+    .skin-concerns   { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; }
+    .skin-concern-tag {
+      font-size:.65rem; padding:2px 7px; border-radius:10px;
+      background:var(--brand-lt); color:var(--brand-dk); font-weight:600;
+    }
+    .skin-card-del {
+      position:absolute; top:7px; right:7px;
+      background:rgba(0,0,0,.5); color:#fff; border:none; border-radius:50%;
+      width:24px; height:24px; font-size:.75rem; cursor:pointer; display:none;
+      align-items:center; justify-content:center;
+    }
+    .skin-photo-card:hover .skin-card-del { display:flex; }
+    .skin-card-compare {
+      position:absolute; top:7px; left:7px;
+      background:rgba(255,255,255,.85); border:1.5px solid var(--border);
+      border-radius:6px; width:22px; height:22px; font-size:.7rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--muted);
+    }
+    .skin-photo-card.compare-sel .skin-card-compare { background:var(--brand); color:#fff; border-color:var(--brand); }
+    .skin-analyzing-badge {
+      position:absolute; bottom:0; left:0; right:0;
+      background:rgba(124,31,162,.85); color:#fff; font-size:.72rem;
+      padding:5px; text-align:center; font-weight:600;
+    }
+    .compare-bar {
+      position:fixed; bottom:0; left:0; right:0; z-index:151;
+      background:#fff; border-top:2px solid var(--brand);
+      padding:14px 24px; display:none;
+      box-shadow:0 -4px 20px rgba(0,0,0,.1);
+    }
+    .compare-bar.open { display:flex; align-items:center; gap:16px; justify-content:center; }
+    .compare-bar span { font-size:.9rem; font-weight:600; }
+    .btn-compare-now {
+      background:var(--brand); color:#fff; border:none; border-radius:8px;
+      padding:9px 22px; font-size:.88rem; font-weight:600; cursor:pointer; font-family:inherit;
+    }
+    .btn-compare-now:hover { background:var(--brand-dk); }
+    /* Skin Photo Detail Modal */
+    .skin-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    @media(max-width:600px) { .skin-detail-grid { grid-template-columns:1fr; } }
+    .skin-analysis-section h4 { font-size:.9rem; font-weight:700; margin-bottom:10px; color:#4a148c; }
+    .skin-metric-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:.84rem; }
+    .skin-metric-val { font-weight:600; }
+    .skin-metric-val.good    { color:#4caf50; }
+    .skin-metric-val.moderate{ color:#ff9800; }
+    .skin-metric-val.bad     { color:#f44336; }
+    .skin-tag-list { display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+    .skin-tag { font-size:.75rem; padding:3px 10px; border-radius:12px; font-weight:600; }
+    .skin-tag.concern { background:#fce4ec; color:#c62828; }
+    .skin-tag.positive{ background:#e8f5e9; color:#2e7d32; }
+    .skin-tag.rec     { background:#ede7f6; color:#4a148c; }
+    .skin-compare-side { flex:1; text-align:center; }
+    .skin-compare-side img { width:100%; border-radius:12px; object-fit:cover; max-height:300px; }
+    .skin-compare-label { font-size:.8rem; color:var(--muted); margin-top:6px; }
+
+    /* ── Auth Modal ── */
+    .auth-tab {
+      flex:1; padding:10px; background:#fff; border:none; font-size:.88rem;
+      font-weight:600; cursor:pointer; color:var(--muted); font-family:inherit; transition:all .15s;
+    }
+    .auth-tab.active { background:var(--brand-lt); color:var(--brand); }
+    .field-group { margin-bottom:15px; }
+    .field-group label { display:block; font-size:.8rem; font-weight:600; color:var(--text); margin-bottom:5px; }
+    .field-input {
+      width:100%; padding:10px 13px; border:1.5px solid var(--border); border-radius:8px;
+      font-size:.9rem; font-family:inherit; outline:none; transition:border-color .15s;
+    }
+    .field-input:focus { border-color:var(--brand); }
+    .pw-rules { margin-top:8px; display:flex; flex-direction:column; gap:4px; }
+    .pw-rule { font-size:.75rem; display:flex; align-items:center; gap:5px; color:#bbb; transition:color .15s; }
+    .pw-rule.ok   { color:#4caf50; }
+    .pw-rule.fail { color:var(--hazard); }
+    .auth-divider {
+      text-align:center; margin:16px 0; color:var(--muted); font-size:.82rem;
+      display:flex; align-items:center; gap:10px;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content:''; flex:1; height:1px; background:var(--border);
+    }
+
+    /* ── Profile Settings Modal ── */
+    .profile-chip-grid { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .profile-chip {
+      padding:5px 13px; border-radius:20px; font-size:.78rem;
+      border:1.5px solid var(--border); background:#fff; color:var(--muted);
+      cursor:pointer; transition:all .15s; font-family:inherit;
+    }
+    .profile-chip.selected { background:var(--brand-lt); border-color:var(--brand); color:var(--brand); font-weight:600; }
+    .prof-select {
+      width:100%; padding:10px 13px; border:1.5px solid var(--border); border-radius:8px;
+      font-size:.88rem; font-family:inherit; outline:none; background:#fff; cursor:pointer;
+    }
+    .prof-select:focus { border-color:var(--brand); }
+    .modal-section-label {
+      font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px;
+      color:var(--muted); margin-bottom:4px; margin-top:14px;
+    }
+
+    /* ── Product Reviews in modal ── */
+    .product-review-card {
+      padding:12px 14px; background:#fafafa; border:1px solid var(--border);
+      border-radius:10px; margin-bottom:8px;
+    }
+    .product-review-header { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px; }
+    .product-review-author { font-size:.82rem; font-weight:600; }
+    .product-review-stars  { color:#f9a825; font-size:.82rem; }
+    .product-review-text   { font-size:.82rem; color:var(--text); line-height:1.6; }
+    .btn-show-more {
+      width:100%; background:none; border:1.5px solid var(--border);
+      border-radius:8px; padding:8px; font-size:.82rem; color:var(--muted);
+      cursor:pointer; font-family:inherit; margin-top:4px; transition:all .15s;
+    }
+    .btn-show-more:hover { border-color:var(--brand); color:var(--brand); }
+
   </style>
 </head>
 <body>
@@ -426,13 +682,29 @@
 <nav>
   <div class="nav-logo">Glow<span>Check</span></div>
   <div class="nav-links">
-    <a href="#" class="active" onclick="setView('products')">Products</a>
-    <a href="#" onclick="setView('ingredients')">Ingredients</a>
+    <a href="#" id="nav-products" class="active" onclick="switchTab('products',null)">Products</a>
+    <a href="#" id="nav-skindiary" onclick="switchTab('skindiary',null)">Skin Diary</a>
     <a href="#" onclick="openCrawlPanel()">Update Data</a>
   </div>
   <div class="nav-right">
     <div id="compare-badge"></div>
     <button class="btn-compare" onclick="openCompareModal()">⚖️ Compare (<span id="compare-count">0</span>)</button>
+
+    <!-- Auth UI -->
+    <button id="btn-signin" class="btn-signin" onclick="openAuthModal()">
+      Sign In
+    </button>
+    <div id="user-menu" class="user-menu" style="display:none" onclick="toggleUserDropdown()">
+      <img id="user-avatar" class="user-avatar" src="" alt="">
+      <div>
+        <div id="user-name" class="user-name"></div>
+      </div>
+      <div id="user-dropdown" class="user-dropdown">
+        <button onclick="event.stopPropagation();switchTab('myprofile',null);toggleUserDropdown()">My Profile</button>
+        <button onclick="event.stopPropagation();openProfileSettingsModal();toggleUserDropdown()">Edit Profile</button>
+        <button onclick="event.stopPropagation();signOutUser()">Sign Out</button>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -446,13 +718,6 @@
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats-strip" id="stats-strip">
-  <div class="stat"><div class="num" id="stat-products">–</div><div class="lbl">Products</div></div>
-  <div class="stat"><div class="num" id="stat-ingredients">–</div><div class="lbl">Ingredients</div></div>
-  <div class="stat"><div class="num" id="stat-brands">–</div><div class="lbl">Brands</div></div>
-  <div class="stat"><div class="num" id="stat-ewg">–</div><div class="lbl">Avg EWG Score</div></div>
-</div>
 
 <!-- LAYOUT -->
 <div class="layout">
@@ -549,14 +814,6 @@
           </div>
         </div>
 
-        <div class="profile-group">
-          <div class="profile-label">또는 직접 입력 — 피해야 할 성분 (쉼표 구분)</div>
-          <textarea id="avoid-ingredients-input" class="avoid-textarea"
-            placeholder="e.g. Fragrance, Retinol, Lactic Acid"></textarea>
-        </div>
-
-        <button class="btn-apply-filter" onclick="applyProfile()">Apply Profile</button>
-        <button class="btn-clear-profile" onclick="clearProfile()">Clear Profile</button>
         <div id="profile-active-badge" style="display:none" class="profile-active-badge">
           Profile filter active — some products hidden
         </div>
@@ -566,19 +823,6 @@
 
   <!-- MAIN -->
   <main class="main">
-    <div class="toolbar">
-      <div class="toolbar-tabs">
-        <button class="tab active" onclick="switchTab('products', this)">Products</button>
-        <button class="tab" onclick="switchTab('ingredients', this)">Ingredients</button>
-      </div>
-      <select class="sort-select" id="sort-select" onchange="applyFilters()">
-        <option value="rating">Top Rated</option>
-        <option value="price_asc">Price: Low to High</option>
-        <option value="price_desc">Price: High to Low</option>
-        <option value="name">Name A–Z</option>
-      </select>
-    </div>
-
     <div id="main-content">
       <div class="loader"><div class="spinner"></div>Loading…</div>
     </div>
@@ -610,6 +854,36 @@
       <div class="modal-section">
         <div class="modal-actions" id="m-actions"></div>
       </div>
+      <!-- Product Reviews (always visible) -->
+      <div class="modal-section">
+        <h3>Reviews <span id="m-review-count" style="font-size:.8rem;color:var(--muted);font-weight:400"></span></h3>
+        <div id="m-reviews-list"><div style="color:var(--muted);font-size:.84rem;padding:4px 0">Loading…</div></div>
+      </div>
+
+      <!-- Write a Review (shown when logged in) -->
+      <div class="modal-section" id="m-review-section" style="display:none">
+        <div class="review-form">
+          <h4>Write a Review</h4>
+          <div class="star-row" id="star-row">
+            <button class="star-btn" onclick="setReviewStar(1)">★</button>
+            <button class="star-btn" onclick="setReviewStar(2)">★</button>
+            <button class="star-btn" onclick="setReviewStar(3)">★</button>
+            <button class="star-btn" onclick="setReviewStar(4)">★</button>
+            <button class="star-btn" onclick="setReviewStar(5)">★</button>
+          </div>
+          <div class="reaction-row">
+            <button class="reaction-btn positive" onclick="setReviewReaction('positive')">👍 Positive</button>
+            <button class="reaction-btn neutral"  onclick="setReviewReaction('neutral')">😐 Neutral</button>
+            <button class="reaction-btn negative" onclick="setReviewReaction('negative')">👎 Negative</button>
+          </div>
+          <textarea class="review-textarea" id="review-text" placeholder="How did this product work for your skin/hair?"></textarea>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.83rem;color:var(--muted);cursor:pointer">
+            <input type="checkbox" id="review-private" style="accent-color:var(--brand);width:15px;height:15px">
+            🔒 Private — only visible to me
+          </label>
+          <button class="btn-apply-filter" style="margin-top:8px" onclick="submitReview()">Save Review</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -633,6 +907,199 @@
     </div>
     <div id="compare-modal-content"></div>
   </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header" style="border-bottom:none;padding-bottom:4px">
+      <div class="modal-title-block">
+        <h2 style="font-size:1.25rem">Welcome to GlowCheck</h2>
+        <p style="font-size:.83rem;color:var(--muted);margin-top:4px">Sign in or create a free account</p>
+      </div>
+      <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    </div>
+    <div class="modal-body" style="padding-top:10px">
+      <div style="display:flex;gap:0;margin-bottom:18px;border:1.5px solid var(--border);border-radius:10px;overflow:hidden">
+        <button id="auth-tab-signin" class="auth-tab active" onclick="switchAuthTab('signin')">Sign In</button>
+        <button id="auth-tab-signup" class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- Sign In -->
+      <div id="auth-signin-form">
+        <div id="signin-error" style="display:none;background:#fff0f0;border:1px solid #ffcdd2;border-radius:8px;padding:10px 13px;font-size:.82rem;color:#c62828;margin-bottom:12px"></div>
+        <div class="field-group">
+          <label>Email</label>
+          <input type="email" id="signin-email" class="field-input" placeholder="your@email.com">
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <input type="password" id="signin-password" class="field-input" placeholder="Password" onkeydown="if(event.key==='Enter')signInWithEmail()">
+        </div>
+        <button class="btn-primary" style="width:100%;margin-top:4px" onclick="signInWithEmail()">Sign In</button>
+        <div class="auth-divider">or</div>
+        <button class="btn-signin" style="width:100%;justify-content:center" onclick="signInWithGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G"> Continue with Google
+        </button>
+      </div>
+
+      <!-- Sign Up -->
+      <div id="auth-signup-form" style="display:none">
+        <div id="signup-error" style="display:none;background:#fff0f0;border:1px solid #ffcdd2;border-radius:8px;padding:10px 13px;font-size:.82rem;color:#c62828;margin-bottom:12px"></div>
+        <div class="field-group">
+          <label>Display Name</label>
+          <input type="text" id="signup-name" class="field-input" placeholder="Your name or nickname">
+        </div>
+        <div class="field-group">
+          <label>Email</label>
+          <input type="email" id="signup-email" class="field-input" placeholder="your@email.com">
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <input type="password" id="signup-password" class="field-input" placeholder="Password" oninput="checkPasswordStrength()">
+          <div class="pw-rules">
+            <div class="pw-rule" id="pw-len">✕  At least 8 characters</div>
+            <div class="pw-rule" id="pw-upper">✕  Uppercase letter (A–Z)</div>
+            <div class="pw-rule" id="pw-lower">✕  Lowercase letter (a–z)</div>
+            <div class="pw-rule" id="pw-num">✕  Number (0–9)</div>
+            <div class="pw-rule" id="pw-special">✕  Special character (!@#$%...)</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Confirm Password</label>
+          <input type="password" id="signup-confirm" class="field-input" placeholder="Re-enter password">
+        </div>
+        <button class="btn-primary" style="width:100%;margin-top:4px" onclick="signUpWithEmail()">Create Account</button>
+        <div class="auth-divider">or</div>
+        <button class="btn-signin" style="width:100%;justify-content:center" onclick="signInWithGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G"> Continue with Google
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE SETTINGS MODAL -->
+<div class="modal-overlay" id="profile-settings-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <h2>My Profile Settings</h2>
+        <p style="font-size:.82rem;color:var(--muted);margin-top:3px">Your beauty profile helps personalize recommendations</p>
+      </div>
+      <button class="modal-close" onclick="closeProfileSettingsModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label>Display Name / Nickname</label>
+        <input type="text" id="prof-name" class="field-input" placeholder="What should we call you?">
+      </div>
+      <div class="field-group">
+        <label>Age Range <span style="font-size:.72rem;color:var(--muted);font-weight:400">(optional)</span></label>
+        <select id="prof-age" class="prof-select">
+          <option value="">Prefer not to say</option>
+          <option value="under20">Under 20</option>
+          <option value="20s">20s</option>
+          <option value="30s">30s</option>
+          <option value="40s">40s</option>
+          <option value="50s">50s</option>
+          <option value="60plus">60 and above</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Skin Type <span style="font-size:.72rem;color:var(--muted);font-weight:400">(choose one)</span></label>
+        <div class="profile-chip-grid" id="prof-skin-type">
+          <button class="profile-chip" data-val="" onclick="selectSingleChip(this,'prof-skin-type')">Unspecified</button>
+          <button class="profile-chip" data-val="dry" onclick="selectSingleChip(this,'prof-skin-type')">Dry</button>
+          <button class="profile-chip" data-val="oily" onclick="selectSingleChip(this,'prof-skin-type')">Oily</button>
+          <button class="profile-chip" data-val="combination" onclick="selectSingleChip(this,'prof-skin-type')">Combination</button>
+          <button class="profile-chip" data-val="normal" onclick="selectSingleChip(this,'prof-skin-type')">Normal</button>
+          <button class="profile-chip" data-val="sensitive" onclick="selectSingleChip(this,'prof-skin-type')">Sensitive</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Skin Concerns <span style="font-size:.72rem;color:var(--muted);font-weight:400">(choose all that apply)</span></label>
+        <div class="profile-chip-grid" id="prof-skin-concerns">
+          <button class="profile-chip" data-val="acne_prone"        onclick="toggleProfileChip(this)">Acne-prone</button>
+          <button class="profile-chip" data-val="dry_skin"          onclick="toggleProfileChip(this)">Dry / Dehydrated</button>
+          <button class="profile-chip" data-val="eczema_atopic"     onclick="toggleProfileChip(this)">Eczema / Atopic</button>
+          <button class="profile-chip" data-val="rosacea"           onclick="toggleProfileChip(this)">Rosacea</button>
+          <button class="profile-chip" data-val="hyperpigmentation" onclick="toggleProfileChip(this)">Hyperpigmentation</button>
+          <button class="profile-chip" data-val="antiaging"         onclick="toggleProfileChip(this)">Anti-aging</button>
+          <button class="profile-chip" data-val="sun_sensitive"     onclick="toggleProfileChip(this)">Sun-sensitive</button>
+          <button class="profile-chip" data-val="acid_sensitive"    onclick="toggleProfileChip(this)">Acid-sensitive</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Hair Type &amp; Concerns <span style="font-size:.72rem;color:var(--muted);font-weight:400">(choose all that apply)</span></label>
+        <div class="profile-chip-grid" id="prof-hair-type">
+          <button class="profile-chip" data-val="fine_hair"      onclick="toggleProfileChip(this)">Fine / Thin</button>
+          <button class="profile-chip" data-val="hair_loss"      onclick="toggleProfileChip(this)">Hair Loss</button>
+          <button class="profile-chip" data-val="scalp_sensitive" onclick="toggleProfileChip(this)">Sensitive Scalp</button>
+          <button class="profile-chip" data-val="curly_hair"     onclick="toggleProfileChip(this)">Curly / Coily</button>
+          <button class="profile-chip" data-val="dry_hair"       onclick="toggleProfileChip(this)">Dry / Damaged</button>
+          <button class="profile-chip" data-val="oily_scalp"     onclick="toggleProfileChip(this)">Oily Scalp</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Preferred Categories <span style="font-size:.72rem;color:var(--muted);font-weight:400">(choose all that apply)</span></label>
+        <div class="profile-chip-grid" id="prof-categories">
+          <button class="profile-chip" data-val="skincare" onclick="toggleProfileChip(this)">Skincare</button>
+          <button class="profile-chip" data-val="makeup"   onclick="toggleProfileChip(this)">Makeup</button>
+          <button class="profile-chip" data-val="haircare" onclick="toggleProfileChip(this)">Haircare</button>
+          <button class="profile-chip" data-val="suncare"  onclick="toggleProfileChip(this)">Suncare</button>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:10px" onclick="saveProfileSettings()">Save Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- SKIN PHOTO DETAIL MODAL -->
+<div class="modal-overlay" id="skin-modal">
+  <div class="modal" style="max-width:800px">
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <h2 id="skin-modal-date" style="font-size:1.1rem">Skin Analysis</h2>
+        <p id="skin-modal-score-line" style="font-size:.84rem;color:var(--muted);margin-top:3px"></p>
+      </div>
+      <button class="modal-close" onclick="closeSkinModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="skin-detail-grid">
+        <div>
+          <img id="skin-modal-img" src="" alt="" style="width:100%;border-radius:12px;object-fit:cover;max-height:320px">
+          <div id="skin-modal-note" style="margin-top:10px;font-size:.83rem;color:var(--muted)"></div>
+        </div>
+        <div class="skin-analysis-section">
+          <h4>AI Skin Analysis</h4>
+          <div id="skin-modal-analysis">
+            <div class="loader"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKIN COMPARE MODAL -->
+<div class="modal-overlay" id="skin-compare-modal">
+  <div class="modal" style="max-width:860px">
+    <div class="modal-header">
+      <h2 style="font-size:1.1rem">Skin Comparison</h2>
+      <button class="modal-close" onclick="document.getElementById('skin-compare-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:20px" id="skin-compare-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SKIN COMPARE BAR -->
+<div class="compare-bar" id="skin-compare-bar">
+  <span id="skin-compare-bar-text">2 photos selected</span>
+  <button class="btn-compare-now" onclick="openSkinCompare()">Compare Side by Side</button>
+  <button style="background:none;border:none;cursor:pointer;color:var(--muted);font-family:inherit;font-size:.85rem" onclick="clearSkinCompare()">Clear</button>
 </div>
 
 <!-- TOAST -->
@@ -663,18 +1130,333 @@ const fsdb    = firebase.firestore();
 const fsauth  = firebase.auth();
 const fsstorage = firebase.storage();
 
-/* ── Firestore 캐시 ── */
-let _allProducts    = null;   // [{id, name, brand, ...}]
-let _allIngredients = null;   // [{id, name, ewg_score, ...}]
+/* ═══════════════════════════════════════════════════
+   Auth — Google Sign-in
+═══════════════════════════════════════════════════ */
+let currentUser = null;
+let userProfile = null;
+let _reviewStar = 0;
+let _reviewReaction = 'neutral';
 
+fsauth.onAuthStateChanged(async (user) => {
+  currentUser = user;
+  if (user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    document.getElementById('user-menu').style.display  = 'flex';
+    document.getElementById('user-avatar').src = user.photoURL || '';
+    document.getElementById('user-name').textContent = user.displayName || user.email;
+
+    await ensureUserProfile(user);
+  } else {
+    document.getElementById('btn-signin').style.display = '';
+    document.getElementById('user-menu').style.display  = 'none';
+    userProfile = null;
+    if (state.tab === 'myprofile') {
+      state.tab = 'products';
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('.tab').classList.add('active');
+      loadProducts();
+    }
+  }
+});
+
+/* ── Auth Modal ── */
+function openAuthModal(tab) {
+  document.getElementById('auth-modal').classList.add('open');
+  switchAuthTab(tab || 'signin');
+  document.getElementById('signin-email').value    = '';
+  document.getElementById('signin-password').value = '';
+}
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+}
+document.getElementById('auth-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('auth-modal')) closeAuthModal();
+});
+function switchAuthTab(tab) {
+  document.getElementById('auth-signin-form').style.display = tab === 'signin' ? '' : 'none';
+  document.getElementById('auth-signup-form').style.display = tab === 'signup' ? '' : 'none';
+  document.getElementById('auth-tab-signin').classList.toggle('active', tab === 'signin');
+  document.getElementById('auth-tab-signup').classList.toggle('active', tab === 'signup');
+  clearAuthError('signin');
+  clearAuthError('signup');
+}
+
+function checkPasswordStrength() {
+  const pw = document.getElementById('signup-password').value;
+  function setRule(id, ok, label) {
+    const el = document.getElementById(id);
+    el.textContent = (ok ? '✓  ' : '✕  ') + label;
+    el.className = 'pw-rule' + (pw.length === 0 ? '' : ok ? ' ok' : ' fail');
+  }
+  setRule('pw-len',     pw.length >= 8,                                'At least 8 characters');
+  setRule('pw-upper',   /[A-Z]/.test(pw),                              'Uppercase letter (A–Z)');
+  setRule('pw-lower',   /[a-z]/.test(pw),                              'Lowercase letter (a–z)');
+  setRule('pw-num',     /[0-9]/.test(pw),                              'Number (0–9)');
+  setRule('pw-special', /[!@#$%^&*()\-_=+\[\]{}|;:,.<>?]/.test(pw),  'Special character (!@#$%...)');
+}
+
+function showAuthError(formId, msg) {
+  const el = document.getElementById(formId + '-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearAuthError(formId) {
+  const el = document.getElementById(formId + '-error');
+  if (el) el.style.display = 'none';
+}
+
+async function signInWithEmail() {
+  clearAuthError('signin');
+  const email = document.getElementById('signin-email').value.trim();
+  const pw    = document.getElementById('signin-password').value;
+  if (!email || !pw) { showAuthError('signin', 'Please enter your email and password.'); return; }
+  try {
+    await fsauth.signInWithEmailAndPassword(email, pw);
+    closeAuthModal();
+  } catch(e) {
+    const msgs = {
+      'auth/user-not-found':    'No account found with this email. Please check or sign up.',
+      'auth/wrong-password':    'Incorrect password. Please double-check and try again.',
+      'auth/invalid-email':     'Please enter a valid email address.',
+      'auth/invalid-credential':'Email or password is incorrect. Please check your login details.',
+      'auth/too-many-requests': 'Too many failed attempts. Please try again in a few minutes.',
+    };
+    showAuthError('signin', msgs[e.code] || 'Please check your email and password.');
+  }
+}
+
+async function signUpWithEmail() {
+  clearAuthError('signup');
+  const name    = document.getElementById('signup-name').value.trim();
+  const email   = document.getElementById('signup-email').value.trim();
+  const pw      = document.getElementById('signup-password').value;
+  const confirm = document.getElementById('signup-confirm').value;
+  if (!name)  { showAuthError('signup', 'Please enter a display name.'); return; }
+  if (!email) { showAuthError('signup', 'Please enter your email address.'); return; }
+  if (pw.length < 8 || !/[A-Z]/.test(pw) || !/[a-z]/.test(pw) ||
+      !/[0-9]/.test(pw) || !/[!@#$%^&*()\-_=+\[\]{}|;:,.<>?]/.test(pw)) {
+    showAuthError('signup', 'Password does not meet all requirements. Please check the rules below.'); return;
+  }
+  if (pw !== confirm) { showAuthError('signup', 'Passwords do not match. Please re-enter.'); return; }
+  try {
+    const cred = await fsauth.createUserWithEmailAndPassword(email, pw);
+    await cred.user.updateProfile({ displayName: name });
+    closeAuthModal();
+    showToast('Account created! Welcome to GlowCheck.');
+    setTimeout(() => openProfileSettingsModal(), 800);
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'An account with this email already exists. Try signing in.',
+      'auth/weak-password':        'Password is too weak. Please follow the requirements below.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+    };
+    showAuthError('signup', msgs[e.code] || e.message);
+  }
+}
+
+async function signInWithGoogle() {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await fsauth.signInWithPopup(provider);
+    closeAuthModal();
+  } catch(e) { showToast('Sign in failed: ' + e.message); }
+}
+
+function signOutUser() {
+  fsauth.signOut();
+}
+
+/* ── Profile Settings Modal ── */
+function openProfileSettingsModal() {
+  if (!currentUser) { openAuthModal(); return; }
+  const sp = userProfile?.skinProfile || {};
+  document.getElementById('prof-name').value = currentUser.displayName || '';
+  document.getElementById('prof-age').value  = sp.age || '';
+  document.querySelectorAll('#prof-skin-type .profile-chip').forEach(c =>
+    c.classList.toggle('selected', c.dataset.val === (sp.skinType || '')));
+  document.querySelectorAll('#prof-skin-concerns .profile-chip').forEach(c =>
+    c.classList.toggle('selected', (sp.skinConcerns || []).includes(c.dataset.val)));
+  document.querySelectorAll('#prof-hair-type .profile-chip').forEach(c =>
+    c.classList.toggle('selected', (sp.hairConcerns || []).includes(c.dataset.val)));
+  document.querySelectorAll('#prof-categories .profile-chip').forEach(c =>
+    c.classList.toggle('selected', (sp.preferredCategories || []).includes(c.dataset.val)));
+  document.getElementById('profile-settings-modal').classList.add('open');
+}
+function closeProfileSettingsModal() {
+  document.getElementById('profile-settings-modal').classList.remove('open');
+}
+document.getElementById('profile-settings-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('profile-settings-modal')) closeProfileSettingsModal();
+});
+function selectSingleChip(el, groupId) {
+  document.querySelectorAll(`#${groupId} .profile-chip`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function toggleProfileChip(el) {
+  el.classList.toggle('selected');
+}
+async function saveProfileSettings() {
+  if (!currentUser) return;
+  const name = document.getElementById('prof-name').value.trim();
+  const skinProfile = {
+    age:                 document.getElementById('prof-age').value,
+    skinType:            document.querySelector('#prof-skin-type .profile-chip.selected')?.dataset.val || '',
+    skinConcerns:        [...document.querySelectorAll('#prof-skin-concerns .profile-chip.selected')].map(c => c.dataset.val),
+    hairConcerns:        [...document.querySelectorAll('#prof-hair-type .profile-chip.selected')].map(c => c.dataset.val),
+    preferredCategories: [...document.querySelectorAll('#prof-categories .profile-chip.selected')].map(c => c.dataset.val),
+  };
+  if (name && name !== currentUser.displayName) {
+    await currentUser.updateProfile({ displayName: name });
+    document.getElementById('user-name').textContent = name;
+  }
+  await fsdb.collection('users').doc(currentUser.uid).update({ skinProfile });
+  userProfile = { ...userProfile, skinProfile };
+  closeProfileSettingsModal();
+  showToast('Profile saved!');
+}
+
+function toggleUserDropdown() {
+  document.getElementById('user-dropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  const menu = document.getElementById('user-menu');
+  if (menu && !menu.contains(e.target))
+    document.getElementById('user-dropdown')?.classList.remove('open');
+});
+
+const DEFAULT_AVATARS = [
+  '/image/brush.jpg', '/image/cleansser.jpg', '/image/eyeshadow.jpg',
+  '/image/lipglow.jpg', '/image/lipstick.jpg', '/image/makeup.jpg',
+  '/image/mask.jpg', '/image/moisturizer.jpg', '/image/serum.jpg',
+  '/image/sunblock.jpg', '/image/toner.jpg',
+];
+function pickAvatar(uid) {
+  const idx = uid.split('').reduce((s, c) => s + c.charCodeAt(0), 0) % DEFAULT_AVATARS.length;
+  return DEFAULT_AVATARS[idx];
+}
+
+async function ensureUserProfile(user) {
+  const ref = fsdb.collection('users').doc(user.uid);
+  const doc = await ref.get();
+  if (!doc.exists) {
+    const avatarUrl = user.photoURL || pickAvatar(user.uid);
+    await ref.set({
+      email:       user.email,
+      displayName: user.displayName || '',
+      photoURL:    user.photoURL || '',
+      avatarUrl,
+      role:        'user',
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    userProfile = { role: 'user', avatarUrl };
+  } else {
+    userProfile = doc.data();
+    if (!userProfile.avatarUrl) {
+      const avatarUrl = user.photoURL || pickAvatar(user.uid);
+      await ref.update({ avatarUrl });
+      userProfile.avatarUrl = avatarUrl;
+    }
+  }
+  // 마지막 접속 시간 갱신 (로그인할 때마다)
+  ref.update({ lastLoginAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(() => {});
+
+  const avatarSrc = user.photoURL || userProfile.avatarUrl || pickAvatar(user.uid);
+  document.getElementById('user-avatar').src = avatarSrc;
+  const role = userProfile.role || 'user';
+  const badge = document.getElementById('role-badge');
+  badge.textContent = role === 'admin' ? 'Admin' : 'User';
+  badge.className   = `role-badge ${role}`;
+}
+
+/* ── In-memory + localStorage cache ── */
+const CACHE_VER   = 'gc_v3';
+const TTL_CATALOG = 2 * 60 * 60 * 1000;   // 2 hours  — products & brands
+const TTL_INGS    = 24 * 60 * 60 * 1000;  // 24 hours — ingredients
+
+let _allProducts    = null;
+let _allIngredients = null;
+let _allBrands      = null;
+
+function cacheSet(key, data, ttlMs) {
+  try {
+    localStorage.setItem(`${CACHE_VER}_${key}`, JSON.stringify({
+      ts: Date.now(), ttl: ttlMs, data
+    }));
+  } catch(e) {
+    // Quota exceeded — ignore, Firestore will be used next time
+    console.warn('[cache] write failed:', e.message);
+  }
+}
+
+function cacheGet(key) {
+  try {
+    const raw = localStorage.getItem(`${CACHE_VER}_${key}`);
+    if (!raw) return null;
+    const { ts, ttl, data } = JSON.parse(raw);
+    if (Date.now() - ts > ttl) {
+      localStorage.removeItem(`${CACHE_VER}_${key}`);
+      return null;
+    }
+    return data;
+  } catch(e) {
+    return null;
+  }
+}
+
+// Clear all glowcheck cache entries (useful after a migration/re-seed)
+function cacheClear() {
+  Object.keys(localStorage)
+    .filter(k => k.startsWith(CACHE_VER))
+    .forEach(k => localStorage.removeItem(k));
+  _allProducts = _allIngredients = _allBrands = null;
+  console.log('[cache] cleared');
+}
+
+// 플랫 구조: products/{productId} — collectionGroup 불필요
 async function ensureDataLoaded() {
   if (!_allProducts) {
-    const snap = await fsdb.collection('products').get();
-    _allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Try localStorage first
+    const cached = cacheGet('products');
+    if (cached) {
+      _allProducts = cached.products;
+      _allBrands   = cached.brands;
+      console.log(`[cache] ${_allProducts.length} products, ${_allBrands.length} brands (from localStorage)`);
+    } else {
+      console.log('[Firestore] Loading products + brands...');
+      try {
+        const [prodSnap, brandSnap] = await Promise.all([
+          fsdb.collection('products').get(),
+          fsdb.collection('brands').get(),
+        ]);
+        _allProducts = prodSnap.docs.map(d => ({ ...d.data(), id: d.id }));
+        _allBrands   = brandSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        console.log(`[Firestore] Loaded ${_allProducts.length} products, ${_allBrands.length} brands`);
+        cacheSet('products', { products: _allProducts, brands: _allBrands }, TTL_CATALOG);
+      } catch(e) {
+        console.error('[Firestore] products load failed:', e.code, e.message);
+        throw e;
+      }
+    }
   }
+
   if (!_allIngredients) {
-    const snap = await fsdb.collection('ingredients').get();
-    _allIngredients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const cached = cacheGet('ingredients');
+    if (cached) {
+      _allIngredients = cached;
+      console.log(`[cache] ${_allIngredients.length} ingredients (from localStorage)`);
+    } else {
+      try {
+        const snap = await fsdb.collection('ingredients').get();
+        _allIngredients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        console.log(`[Firestore] Loaded ${_allIngredients.length} ingredients`);
+        cacheSet('ingredients', _allIngredients, TTL_INGS);
+      } catch(e) {
+        console.error('[Firestore] ingredients load failed:', e.code, e.message);
+        _allIngredients = [];
+      }
+    }
   }
 }
 
@@ -701,7 +1483,6 @@ let currentProductId = null;
    Boot
 ═══════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  loadStats();
   loadProducts();
   document.getElementById('search-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') doSearch();
@@ -712,18 +1493,7 @@ document.addEventListener('DOMContentLoaded', () => {
    Stats
 ═══════════════════════════════════════════════════ */
 async function loadStats() {
-  try {
-    await ensureDataLoaded();
-    const prods = _allProducts;
-    const ings  = _allIngredients;
-    const brands = new Set(prods.map(p => p.brand).filter(Boolean)).size;
-    const scores = prods.map(p => p.avg_ewg).filter(v => v != null);
-    const avgEwg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–';
-    document.getElementById('stat-products').textContent    = fmtNum(prods.length);
-    document.getElementById('stat-ingredients').textContent = fmtNum(ings.length);
-    document.getElementById('stat-brands').textContent      = fmtNum(brands);
-    document.getElementById('stat-ewg').textContent         = avgEwg;
-  } catch(e) { console.warn('loadStats:', e); }
+  // stats strip removed — no-op kept for legacy call sites
 }
 
 /* ═══════════════════════════════════════════════════
@@ -731,7 +1501,16 @@ async function loadStats() {
 ═══════════════════════════════════════════════════ */
 async function loadProducts() {
   setLoading();
-  await ensureDataLoaded();
+  try {
+    await ensureDataLoaded();
+  } catch(e) {
+    document.getElementById('main-content').innerHTML =
+      `<div class="loader" style="color:#c0375b">
+        Firestore 연결 오류: <b>${e.code || e.message}</b><br>
+        <small style="color:var(--muted)">브라우저 콘솔(F12)에서 상세 내용을 확인하세요.</small>
+       </div>`;
+    return;
+  }
 
   let items = [..._allProducts];
   const perPage = 24;
@@ -814,14 +1593,43 @@ function renderProducts(data) {
   renderPagination(total, page, per_page);
 }
 
+const CATEGORY_IMGS = {
+  moisturizer:  '/image/moisturizer.jpg',
+  serum:        '/image/serum.jpg',
+  cleanser:     '/image/cleansser.jpg',
+  toner:        '/image/toner.jpg',
+  mask:         '/image/mask.jpg',
+  'eye cream':  '/image/serum.jpg',
+  foundation:   '/image/makeup.jpg',
+  'bb cream':   '/image/makeup.jpg',
+  concealer:    '/image/makeup.jpg',
+  lipstick:     '/image/lipstick.jpg',
+  'lip gloss':  '/image/lipglow.jpg',
+  mascara:      '/image/makeup.jpg',
+  eyeshadow:    '/image/eyeshadow.jpg',
+  shampoo:      '/image/brush.jpg',
+  conditioner:  '/image/brush.jpg',
+  'hair mask':  '/image/mask.jpg',
+  sunscreen:    '/image/sunblock.jpg',
+  skincare:     '/image/moisturizer.jpg',
+  makeup:       '/image/makeup.jpg',
+  haircare:     '/image/brush.jpg',
+  suncare:      '/image/sunblock.jpg',
+};
+
+function productFallbackImg(p) {
+  const sub = (p.subcategory || '').toLowerCase();
+  const cat = (p.category   || '').toLowerCase();
+  return CATEGORY_IMGS[sub] || CATEGORY_IMGS[cat] || '/image/moisturizer.jpg';
+}
+
 function productCard(p) {
   const ewgClass = ewgBadgeClass(p.avg_ewg);
   const ewgLabel = p.avg_ewg ? `EWG ${p.avg_ewg}` : 'N/A';
   const retailerLabel = p.retailer ? `<span class="retailer-tag">${cap(p.retailer)}</span>` : '';
   const price = p.price ? `$${parseFloat(p.price).toFixed(2)}` : 'N/A';
-  const img = p.image_url
-    ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}" loading="lazy" onerror="this.parentNode.innerHTML='<span class=\\'img-placeholder\\'>💄</span>'">`
-    : `<span class="img-placeholder">💄</span>`;
+  const fallback = productFallbackImg(p);
+  const img = `<img src="${p.image_url ? escHtml(p.image_url) : fallback}" alt="${escHtml(p.name)}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'">`;
   const isSelected = compareSet.has(p.id) ? 'selected' : '';
 
   return `
@@ -843,68 +1651,277 @@ function productCard(p) {
 }
 
 /* ═══════════════════════════════════════════════════
-   Ingredients tab  (Firestore 캐시)
+   Skin Diary tab
 ═══════════════════════════════════════════════════ */
-async function loadIngredients() {
-  setLoading();
-  await ensureDataLoaded();
+let _skinCompareSet = new Map();  // docId → log data
 
-  let items = [..._allIngredients];
-  const perPage = 30;
-
-  // 텍스트 검색
-  if (state.q) {
-    const q = state.q.toLowerCase();
-    items = items.filter(i =>
-      i.name.toLowerCase().includes(q) ||
-      (i.inci_name  && i.inci_name.toLowerCase().includes(q)) ||
-      (i.function   && i.function.toLowerCase().includes(q))
-    );
-  }
-
-  // EWG 범위 필터
-  const safe = state.ewgSafe ?? true, moderate = state.ewgModerate ?? true, hazard = state.ewgHazard ?? true;
-  if (!(safe && moderate && hazard)) {
-    if (!safe && !moderate && !hazard) { renderIngredients({ ingredients:[], total:0, page:1 }); return; }
-    items = items.filter(i => {
-      const s = i.ewg_score;
-      if (s == null) return true;
-      if (safe     && s <= 2) return true;
-      if (moderate && s > 2 && s <= 6) return true;
-      if (hazard   && s > 6) return true;
-      return false;
-    });
-  }
-
-  // EWG 오름차순
-  items.sort((a,b) => (a.ewg_score??99) - (b.ewg_score??99));
-
-  const total = items.length;
-  const start = (state.page - 1) * perPage;
-  // renderIngredients 는 ing.id 가 필요 — Firestore doc id를 순번 대신 사용
-  renderIngredients({ ingredients: items.slice(start, start+perPage), total, page: state.page });
-}
-
-function renderIngredients(data) {
-  const { ingredients, total, page } = data;
+async function loadSkinDiary() {
+  document.getElementById('pagination').innerHTML = '';
   const main = document.getElementById('main-content');
-
-  if (!ingredients || ingredients.length === 0) {
-    main.innerHTML = `<div class="loader">😕 No ingredients found.</div>`;
+  if (!currentUser) {
+    main.innerHTML = `
+      <div class="signin-prompt">
+        <p>Sign in to start your personal skin journey.<br>Upload photos and track your skin with AI.</p>
+        <button class="btn-apply-filter" style="width:auto;padding:10px 28px" onclick="openAuthModal()">Sign In</button>
+      </div>`;
     return;
   }
-
-  main.innerHTML = `<div class="ingredient-list">
-    ${ingredients.map(ing => `
-      <div class="ingredient-row" onclick="openIngredient('${ing.id}')">
-        <div class="ing-pos">#${ing.id}</div>
-        <div class="ing-name">${escHtml(ing.name)}</div>
-        <div class="ing-func">${escHtml(ing.function || '')}</div>
-        <span class="ewg-score-pill ${ewgBadgeClass(ing.ewg_score)}">${ing.ewg_score ?? '?'}</span>
+  main.innerHTML = `
+    <div class="skin-diary-header">
+      <div>
+        <h2>My Skin Diary</h2>
+        <p>Track your skin journey with AI-powered analysis</p>
       </div>
-    `).join('')}
-  </div>`;
-  renderPagination(total, page, 30);
+      <label class="btn-upload-photo" id="btn-upload-label">
+        + Upload Photo
+        <input type="file" id="skin-file-input" accept="image/*" style="display:none" onchange="handleSkinUpload(event)">
+      </label>
+    </div>
+    <div id="skin-upload-progress" style="display:none" class="upload-progress">
+      <span id="skin-upload-status">Uploading…</span>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="skin-progress-bar" style="width:0%"></div></div>
+    </div>
+    <div id="skin-photo-grid" class="skin-photo-grid">
+      <div class="loader"><div class="spinner"></div>Loading…</div>
+    </div>`;
+  renderSkinDiary();
+}
+
+async function renderSkinDiary() {
+  const grid = document.getElementById('skin-photo-grid');
+  if (!grid) return;
+  try {
+    const snap = await fsdb.collection('users').doc(currentUser.uid)
+      .collection('skin_logs').orderBy('uploadedAt', 'desc').get();
+    const logs = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+    if (logs.length === 0) {
+      grid.innerHTML = `<p style="color:var(--muted);font-size:.88rem;grid-column:1/-1;padding:20px 0">
+        No photos yet. Upload your first photo to start tracking!
+      </p>`;
+      return;
+    }
+    grid.innerHTML = logs.map(log => {
+      const date = log.uploadedAt?.toDate
+        ? log.uploadedAt.toDate().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'})
+        : 'Unknown date';
+      const a = log.analysis;
+      const isPending = log.analysisStatus === 'pending';
+      const score = a?.score ?? 0;
+      const concerns = (a?.concerns || []).slice(0, 3);
+      const isSel = _skinCompareSet.has(log.docId);
+      return `
+        <div class="skin-photo-card${isSel?' compare-sel':''}" id="scard-${log.docId}">
+          <div class="skin-card-compare" onclick="event.stopPropagation();toggleSkinCompare('${log.docId}')">${isSel ? '✓' : ''}</div>
+          <button class="skin-card-del" onclick="event.stopPropagation();deleteSkinLog('${log.docId}','${escHtml(log.storagePath||'')}')">✕</button>
+          <img class="skin-photo-thumb" src="${escHtml(log.photoURL)}" alt="skin photo"
+               onclick="openSkinModal('${log.docId}')">
+          <div class="skin-photo-info" onclick="openSkinModal('${log.docId}')">
+            <div class="skin-photo-date">${date}</div>
+            ${isPending
+              ? `<div style="font-size:.76rem;color:#9c27b0;font-weight:600">Analyzing…</div>`
+              : `<div class="skin-score-row">
+                   <span class="skin-score-num">${score}/10</span>
+                   <div class="skin-score-bar"><div class="skin-score-fill" style="width:${score*10}%"></div></div>
+                 </div>
+                 <div class="skin-concerns">
+                   ${concerns.map(c=>`<span class="skin-concern-tag">${escHtml(c)}</span>`).join('')}
+                 </div>`
+            }
+          </div>
+          ${isPending ? '<div class="skin-analyzing-badge">AI Analyzing…</div>' : ''}
+        </div>`;
+    }).join('');
+  } catch(e) {
+    if (grid) grid.innerHTML = `<p style="color:var(--hazard)">Failed to load: ${e.message}</p>`;
+  }
+}
+
+async function handleSkinUpload(event) {
+  const file = event.target.files[0];
+  if (!file || !currentUser) return;
+  event.target.value = '';
+
+  const progressWrap = document.getElementById('skin-upload-progress');
+  const progressBar  = document.getElementById('skin-progress-bar');
+  const statusEl     = document.getElementById('skin-upload-status');
+  const uploadBtn    = document.getElementById('btn-upload-label');
+  progressWrap.style.display = 'flex';
+  uploadBtn.style.pointerEvents = 'none';
+  uploadBtn.style.opacity = '.6';
+
+  try {
+    // 1. Firebase Storage 업로드
+    const uid = currentUser.uid;
+    const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._]/g,'_')}`;
+    const storagePath = `skin_photos/${uid}/${filename}`;
+    const storageRef = fsstorage.ref(storagePath);
+
+    statusEl.textContent = 'Uploading photo…';
+    const uploadTask = storageRef.put(file);
+    await new Promise((resolve, reject) => {
+      uploadTask.on('state_changed',
+        snap => {
+          const pct = Math.round(snap.bytesTransferred / snap.totalBytes * 100);
+          progressBar.style.width = pct + '%';
+        },
+        reject, resolve
+      );
+    });
+
+    const photoURL = await storageRef.getDownloadURL();
+    progressBar.style.width = '60%';
+    statusEl.textContent = 'Saving…';
+
+    // 2. Firestore에 메타데이터 저장 (분석 대기 상태)
+    const docRef = await fsdb.collection('users').doc(uid).collection('skin_logs').add({
+      photoURL,
+      storagePath,
+      uploadedAt:      firebase.firestore.FieldValue.serverTimestamp(),
+      analysisStatus:  'pending',
+      analysis:        null,
+    });
+
+    progressBar.style.width = '70%';
+    statusEl.textContent = 'AI is analyzing your skin…';
+    renderSkinDiary();
+
+    // 3. AI 분석 (백그라운드)
+    try {
+      const resp = await fetch('/api/analyze-skin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_url: photoURL }),
+      });
+      const result = await resp.json();
+      const analysis = result.analysis || null;
+      await docRef.update({ analysisStatus: analysis ? 'done' : 'error', analysis });
+    } catch(e) {
+      await docRef.update({ analysisStatus: 'error' });
+    }
+
+    progressBar.style.width = '100%';
+    statusEl.textContent = 'Done!';
+    setTimeout(() => { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }, 1200);
+    renderSkinDiary();
+
+  } catch(e) {
+    statusEl.textContent = 'Upload failed: ' + e.message;
+    setTimeout(() => { progressWrap.style.display = 'none'; }, 3000);
+  } finally {
+    uploadBtn.style.pointerEvents = '';
+    uploadBtn.style.opacity = '';
+  }
+}
+
+async function deleteSkinLog(docId, storagePath) {
+  if (!currentUser) return;
+  if (!confirm('Delete this photo and its analysis?')) return;
+  try {
+    if (storagePath) await fsstorage.ref(storagePath).delete().catch(() => {});
+    await fsdb.collection('users').doc(currentUser.uid).collection('skin_logs').doc(docId).delete();
+    _skinCompareSet.delete(docId);
+    updateSkinCompareBar();
+    renderSkinDiary();
+    showToast('Photo deleted.');
+  } catch(e) { showToast('Delete failed: ' + e.message); }
+}
+
+async function openSkinModal(docId) {
+  const snap = await fsdb.collection('users').doc(currentUser.uid)
+    .collection('skin_logs').doc(docId).get();
+  if (!snap.exists) return;
+  const log = snap.data();
+  const a   = log.analysis;
+  const date = log.uploadedAt?.toDate
+    ? log.uploadedAt.toDate().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})
+    : '';
+
+  document.getElementById('skin-modal-img').src  = log.photoURL;
+  document.getElementById('skin-modal-date').textContent = date;
+  document.getElementById('skin-modal-score-line').textContent =
+    a ? `Overall Score: ${a.score}/10` : log.analysisStatus === 'pending' ? 'Analysis in progress…' : '';
+
+  const analysisEl = document.getElementById('skin-modal-analysis');
+  if (!a) {
+    analysisEl.innerHTML = log.analysisStatus === 'pending'
+      ? '<div class="loader"><div class="spinner"></div>AI is analyzing…</div>'
+      : '<p style="color:var(--muted)">Analysis not available.</p>';
+  } else {
+    function metricClass(v, goodVals, badVals) {
+      if (goodVals.includes(v)) return 'good';
+      if (badVals.includes(v))  return 'bad';
+      return 'moderate';
+    }
+    analysisEl.innerHTML = `
+      <p style="font-size:.84rem;line-height:1.7;margin-bottom:12px">${escHtml(a.summary || '')}</p>
+      <div style="background:#fafafa;border-radius:10px;padding:12px;margin-bottom:12px">
+        <div class="skin-metric-row"><span>Hydration</span><span class="skin-metric-val ${metricClass(a.hydration,['good'],['low'])}">${cap(a.hydration||'')}</span></div>
+        <div class="skin-metric-row"><span>Redness</span><span class="skin-metric-val ${metricClass(a.redness,['none'],['high','moderate'])}">${cap(a.redness||'')}</span></div>
+        <div class="skin-metric-row"><span>Texture</span><span class="skin-metric-val ${metricClass(a.texture,['smooth'],['rough','uneven'])}">${cap((a.texture||'').replace('_',' '))}</span></div>
+        <div class="skin-metric-row"><span>Pores</span><span class="skin-metric-val ${metricClass(a.pores,['minimal'],['enlarged'])}">${cap(a.pores||'')}</span></div>
+      </div>
+      ${(a.concerns||[]).length ? `<div style="margin-bottom:10px"><div style="font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:5px">CONCERNS</div><div class="skin-tag-list">${a.concerns.map(c=>`<span class="skin-tag concern">${escHtml(c)}</span>`).join('')}</div></div>` : ''}
+      ${(a.positives||[]).length ? `<div style="margin-bottom:10px"><div style="font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:5px">POSITIVES</div><div class="skin-tag-list">${a.positives.map(c=>`<span class="skin-tag positive">${escHtml(c)}</span>`).join('')}</div></div>` : ''}
+      ${(a.recommendations||[]).length ? `<div><div style="font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:5px">RECOMMENDATIONS</div><div class="skin-tag-list">${a.recommendations.map(r=>`<span class="skin-tag rec">${escHtml(r)}</span>`).join('')}</div></div>` : ''}
+    `;
+  }
+  document.getElementById('skin-modal').classList.add('open');
+}
+function closeSkinModal() {
+  document.getElementById('skin-modal').classList.remove('open');
+}
+document.getElementById('skin-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('skin-modal')) closeSkinModal();
+});
+
+function toggleSkinCompare(docId) {
+  if (_skinCompareSet.has(docId)) {
+    _skinCompareSet.delete(docId);
+  } else {
+    if (_skinCompareSet.size >= 2) { showToast('Select up to 2 photos to compare'); return; }
+    _skinCompareSet.set(docId, true);
+  }
+  updateSkinCompareBar();
+  renderSkinDiary();
+}
+function updateSkinCompareBar() {
+  const bar = document.getElementById('skin-compare-bar');
+  const cnt = _skinCompareSet.size;
+  bar.classList.toggle('open', cnt === 2);
+}
+function clearSkinCompare() {
+  _skinCompareSet.clear();
+  updateSkinCompareBar();
+  renderSkinDiary();
+}
+async function openSkinCompare() {
+  const ids = [..._skinCompareSet.keys()];
+  if (ids.length < 2) return;
+  const logs = await Promise.all(ids.map(id =>
+    fsdb.collection('users').doc(currentUser.uid).collection('skin_logs').doc(id).get()
+      .then(d => d.exists ? d.data() : null)
+  ));
+  const sides = logs.map((log, i) => {
+    if (!log) return '';
+    const date = log.uploadedAt?.toDate
+      ? log.uploadedAt.toDate().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+      : 'Unknown';
+    const score = log.analysis?.score ?? '–';
+    return `
+      <div class="skin-compare-side">
+        <img src="${escHtml(log.photoURL)}" alt="skin">
+        <div class="skin-compare-label">${date}</div>
+        <div style="font-size:.9rem;font-weight:700;color:var(--brand);margin-top:4px">${score}/10</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:3px">${(log.analysis?.concerns||[]).join(', ') || '–'}</div>
+      </div>`;
+  });
+  document.getElementById('skin-compare-content').innerHTML = sides.join(`
+    <div style="display:flex;align-items:center;font-size:1.4rem;color:var(--muted);padding:0 10px">vs</div>`);
+  document.getElementById('skin-compare-modal').classList.add('open');
+  document.getElementById('skin-compare-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('skin-compare-modal'))
+      document.getElementById('skin-compare-modal').classList.remove('open');
+  }, { once: true });
 }
 
 /* ═══════════════════════════════════════════════════
@@ -920,7 +1937,9 @@ async function openProduct(id) {
   const p = _allProducts.find(x => x.id === String(id)) || await fsdb.collection('products').doc(String(id)).get().then(d => d.exists ? {id:d.id,...d.data()} : null);
   if (!p) { closeModal(); return; }
 
-  document.getElementById('m-img').src   = p.image_url || '';
+  const mImg = document.getElementById('m-img');
+  mImg.src = p.image_url || productFallbackImg(p);
+  mImg.onerror = () => { mImg.onerror = null; mImg.src = productFallbackImg(p); };
   document.getElementById('m-brand').textContent = p.brand || '';
   document.getElementById('m-name').textContent  = p.name;
 
@@ -976,8 +1995,20 @@ async function openProduct(id) {
   // Actions
   document.getElementById('m-actions').innerHTML = `
     ${p.product_url ? `<a href="${escHtml(p.product_url)}" target="_blank"><button class="btn-primary">Buy on ${cap(p.retailer||'Store')}</button></a>` : ''}
-    <button class="btn-secondary" onclick="toggleCompare(${p.id});closeModal()">+ Compare</button>
+    <button class="btn-secondary" onclick="toggleCompare('${p.id}');closeModal()">+ Compare</button>
+    ${currentUser ? `<button class="btn-add-own" onclick="addToMyProducts('${p.id}')">+ My Products</button>` : ''}
   `;
+
+  // 리뷰 작성 폼 — 로그인 시에만 표시
+  const reviewSection = document.getElementById('m-review-section');
+  reviewSection.style.display = currentUser ? 'block' : 'none';
+  _reviewStar = 0; _reviewReaction = 'neutral';
+  document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('lit'));
+  document.querySelectorAll('.reaction-btn').forEach(b => b.classList.remove('sel'));
+  if (document.getElementById('review-text')) document.getElementById('review-text').value = '';
+
+  // 상품 리뷰 로드
+  loadProductReviews(id);
 }
 
 function closeModal() {
@@ -1161,7 +2192,6 @@ function applyProfile() {
   document.getElementById('profile-active-badge').style.display = active ? 'block' : 'none';
   state.page = 1;
   if (state.tab === 'products') loadProducts();
-  else loadIngredients();
 }
 
 function clearProfile() {
@@ -1202,27 +2232,270 @@ function filterRetailer(retailer) {
 }
 
 function applyFilters() {
-  state.sort       = document.getElementById('sort-select').value;
-  state.minPrice   = parseFloat(document.getElementById('min-price').value) || null;
-  state.maxPrice   = parseFloat(document.getElementById('max-price').value) || null;
+  state.sort        = document.getElementById('sort-select')?.value || 'rating';
+  state.minPrice    = parseFloat(document.getElementById('min-price').value) || null;
+  state.maxPrice    = parseFloat(document.getElementById('max-price').value) || null;
   state.ewgSafe     = document.getElementById('ewg-safe').checked;
   state.ewgModerate = document.getElementById('ewg-moderate').checked;
   state.ewgHazard   = document.getElementById('ewg-hazard').checked;
-  state.page       = 1;
+  // skin & hair concerns
+  state.avoidConcerns = [...document.querySelectorAll('.concern-cb:checked')].map(cb => cb.value);
+  state.avoidIngredients = [];
+  const active = state.avoidConcerns.length > 0;
+  document.getElementById('profile-active-badge').style.display = active ? 'block' : 'none';
+  state.page = 1;
   if (state.tab === 'products') loadProducts();
-  else loadIngredients();
 }
 
 function switchTab(tab, btn) {
   state.tab  = tab;
   state.page = 1;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  if (tab === 'products') loadProducts();
-  else loadIngredients();
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navMap = { products: 'nav-products', skindiary: 'nav-skindiary' };
+  if (navMap[tab]) document.getElementById(navMap[tab])?.classList.add('active');
+  document.querySelector('.sidebar').style.display = (tab === 'products') ? '' : 'none';
+  if (tab === 'products')       loadProducts();
+  else if (tab === 'skindiary') loadSkinDiary();
+  else if (tab === 'myprofile') loadMyProfile();
 }
 
-function setView(v) { /* could expand routing */ }
+/* ═══════════════════════════════════════════════════
+   My Profile — 구매 이력 / 리뷰 / AI 분석
+═══════════════════════════════════════════════════ */
+async function loadMyProfile() {
+  document.getElementById('pagination').innerHTML = '';
+  if (!currentUser) {
+    document.getElementById('main-content').innerHTML = `
+      <div class="signin-prompt">
+        <p>Sign in to track your products, write reviews,<br>and get a personalized AI ingredient analysis.</p>
+        <button class="btn-apply-filter" style="width:auto;padding:10px 28px" onclick="openAuthModal()">
+          Sign in / Sign up
+        </button>
+      </div>`;
+    return;
+  }
+  setLoading();
+  const uid = currentUser.uid;
+  const [pSnap, rSnap] = await Promise.all([
+    fsdb.collection('users').doc(uid).collection('purchased_products').orderBy('addedAt','desc').get().catch(()=>({docs:[]})),
+    fsdb.collection('users').doc(uid).collection('reviews').orderBy('createdAt','desc').get().catch(()=>({docs:[]})),
+  ]);
+  const purchased = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const reviews   = rSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderMyProfile(purchased, reviews);
+}
+
+function renderMyProfile(purchased, reviews) {
+  const role = userProfile?.role || 'user';
+  const purchasedHtml = purchased.length
+    ? purchased.map(p => `
+        <div class="my-product-item">
+          <div>
+            <div class="mp-name">${escHtml(p.product_name || '')}</div>
+            <div class="mp-meta">${escHtml(p.brand || '')} · ${cap(p.category || '')}</div>
+          </div>
+          <button class="mp-remove" onclick="removeMyProduct('${p.id}')">✕</button>
+        </div>`).join('')
+    : '<p style="color:var(--muted);font-size:.84rem;padding:8px 0">제품 모달에서 "Add to My Products" 버튼으로 추가하세요.</p>';
+
+  const reviewsHtml = reviews.length
+    ? reviews.map(r => `
+        <div class="review-item">
+          <div class="review-header">
+            <span class="review-product">${escHtml(r.product_name || '')}</span>
+            <span class="review-stars">${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</span>
+            <span class="reaction-badge ${r.reaction||'neutral'}">${
+              r.reaction==='positive'?'👍 Positive':r.reaction==='negative'?'👎 Negative':'😐 Neutral'
+            }</span>
+          </div>
+          ${r.text ? `<div class="review-text">${escHtml(r.text)}</div>` : ''}
+        </div>`).join('')
+    : '<p style="color:var(--muted);font-size:.84rem;padding:8px 0">제품 모달에서 리뷰를 남겨보세요.</p>';
+
+  const canAnalyze = reviews.length > 0;
+  document.getElementById('main-content').innerHTML = `
+    <div style="max-width:760px">
+      <div class="profile-hero">
+        <img src="${escHtml(currentUser.photoURL || userProfile?.avatarUrl || pickAvatar(currentUser.uid))}" alt="" style="flex-shrink:0;object-fit:cover">
+        <div class="profile-hero-info">
+          <h2>${escHtml(currentUser.displayName || currentUser.email)}</h2>
+          <p>${escHtml(currentUser.email)}</p>
+          <span class="role-badge ${role}" style="margin-top:5px;display:inline-block">${role==='admin'?'Admin':'User'}</span>
+          ${role==='admin'?'<span style="font-size:.72rem;color:var(--muted);margin-left:8px">관리자 — Firestore 직접 수정 가능</span>':''}
+        </div>
+      </div>
+
+      <div class="section-heading">My Products <span class="cnt">${purchased.length}</span></div>
+      <div id="my-products-list">${purchasedHtml}</div>
+
+      <div class="section-heading">My Reviews <span class="cnt">${reviews.length}</span></div>
+      <div id="my-reviews-list">${reviewsHtml}</div>
+
+      <div class="section-heading">AI Ingredient Analysis</div>
+      ${canAnalyze
+        ? `<p style="font-size:.82rem;color:var(--muted);margin-bottom:8px">리뷰 ${reviews.length}개를 바탕으로 내 피부에 맞는 성분과 피해야 할 성분을 분석합니다.</p>
+           <button class="btn-analyze" id="btn-analyze" onclick="analyzeMyProfile()">내 피부 성분 분석하기</button>
+           <div id="analysis-result"></div>`
+        : '<p style="color:var(--muted);font-size:.84rem">리뷰를 1개 이상 남긴 후 AI 분석을 받을 수 있습니다.</p>'
+      }
+    </div>`;
+}
+
+async function addToMyProducts(productId) {
+  if (!currentUser) { showToast('Sign in first'); return; }
+  await ensureDataLoaded();
+  const p = _allProducts.find(x => x.id === String(productId));
+  if (!p) return;
+  await fsdb.collection('users').doc(currentUser.uid).collection('purchased_products').add({
+    product_id:      String(productId),
+    product_name:    p.name,
+    brand:           p.brand || '',
+    category:        p.category || '',
+    ingredient_names: p.ingredient_names || [],
+    addedAt:         firebase.firestore.FieldValue.serverTimestamp(),
+  });
+  showToast('Added to My Products!');
+}
+
+async function removeMyProduct(docId) {
+  if (!currentUser) return;
+  await fsdb.collection('users').doc(currentUser.uid).collection('purchased_products').doc(docId).delete();
+  showToast('Removed');
+  loadMyProfile();
+}
+
+/* ── Review form helpers ── */
+function setReviewStar(n) {
+  _reviewStar = n;
+  document.querySelectorAll('.star-btn').forEach((btn, i) => {
+    btn.classList.toggle('lit', i < n);
+  });
+}
+function setReviewReaction(r) {
+  _reviewReaction = r;
+  document.querySelectorAll('.reaction-btn').forEach(btn => btn.classList.remove('sel'));
+  document.querySelector(`.reaction-btn.${r}`)?.classList.add('sel');
+}
+
+async function submitReview() {
+  if (!currentUser) { showToast('Sign in first'); return; }
+  if (!_reviewStar) { showToast('Please select a star rating'); return; }
+  await ensureDataLoaded();
+  const p = _allProducts.find(x => x.id === String(currentProductId));
+  if (!p) return;
+  const reviewData = {
+    product_id:       String(currentProductId),
+    product_name:     p.name,
+    brand:            p.brand || '',
+    category:         p.category || '',
+    ingredient_names: p.ingredient_names || [],
+    userId:           currentUser.uid,
+    displayName:      currentUser.displayName || currentUser.email,
+    rating:           _reviewStar,
+    reaction:         _reviewReaction,
+    text:             document.getElementById('review-text').value.trim(),
+    isPrivate:        document.getElementById('review-private').checked,
+    createdAt:        firebase.firestore.FieldValue.serverTimestamp(),
+  };
+  await Promise.all([
+    fsdb.collection('reviews').add(reviewData),
+    fsdb.collection('users').doc(currentUser.uid).collection('reviews').add(reviewData),
+  ]);
+  showToast('Review saved!');
+  document.getElementById('review-text').value = '';
+  document.getElementById('review-private').checked = false;
+  setReviewStar(0);
+  setReviewReaction('neutral');
+  loadProductReviews(currentProductId);
+}
+
+/* ── Per-product reviews loader ── */
+async function loadProductReviews(productId, showAll) {
+  const container = document.getElementById('m-reviews-list');
+  if (!container) return;
+  try {
+    const snap = await fsdb.collection('reviews')
+      .where('product_id', '==', String(productId))
+      .orderBy('createdAt', 'desc')
+      .get();
+    const myUid = currentUser?.uid || null;
+    const allReviews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // 비공개 리뷰는 작성자 본인만 볼 수 있음
+    const reviews = allReviews.filter(r => !r.isPrivate || r.userId === myUid);
+
+    // 내 리뷰 상단 고정, 나머지는 최신순
+    const myReviews    = reviews.filter(r => r.userId === myUid);
+    const otherReviews = reviews.filter(r => r.userId !== myUid);
+    const sorted = [...myReviews, ...otherReviews];
+
+    const countEl = document.getElementById('m-review-count');
+    if (countEl) countEl.textContent = sorted.length ? `(${sorted.length})` : '';
+    if (sorted.length === 0) {
+      container.innerHTML = `<p style="color:var(--muted);font-size:.84rem;padding:4px 0">
+        No reviews yet. ${currentUser ? 'Be the first to share your experience!' : 'Sign in to write a review.'}
+      </p>`;
+      return;
+    }
+    const shown = showAll ? sorted : sorted.slice(0, 3);
+    container.innerHTML = shown.map(r => {
+      const isMe      = r.userId === myUid;
+      const lockBadge = r.isPrivate ? `<span style="font-size:.75rem;color:var(--muted);margin-left:4px">🔒 Private</span>` : '';
+      const meBadge   = isMe ? `<span style="font-size:.72rem;background:var(--brand-lt);color:var(--brand);border-radius:8px;padding:1px 7px;margin-left:5px;font-weight:600">My Review</span>` : '';
+      return `
+      <div class="product-review-card" style="${isMe ? 'border-left:3px solid var(--brand);padding-left:10px' : ''}">
+        <div class="product-review-header">
+          <span class="product-review-author">${escHtml(r.displayName || 'Anonymous')}${meBadge}${lockBadge}</span>
+          <span class="product-review-stars">${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</span>
+          <span class="reaction-badge ${r.reaction||'neutral'}">${
+            r.reaction==='positive'?'👍 Positive':r.reaction==='negative'?'👎 Negative':'😐 Neutral'
+          }</span>
+        </div>
+        ${r.text ? `<div class="product-review-text">${escHtml(r.text)}</div>` : ''}
+      </div>`;
+    }).join('');
+    if (!showAll && sorted.length > 3) {
+      container.innerHTML += `<button class="btn-show-more" onclick="loadProductReviews('${productId}',true)">
+        Show all ${sorted.length} reviews ▾
+      </button>`;
+    }
+  } catch(e) {
+    container.innerHTML = '<p style="color:var(--muted);font-size:.84rem">Reviews unavailable.</p>';
+    if (e.code === 'failed-precondition') {
+      console.warn('Firestore index required for reviews. Check console link to create it.');
+    }
+  }
+}
+
+/* ── AI 분석 ── */
+async function analyzeMyProfile() {
+  const btn = document.getElementById('btn-analyze');
+  btn.disabled = true; btn.textContent = 'Analyzing...';
+  const uid = currentUser.uid;
+  const [pSnap, rSnap] = await Promise.all([
+    fsdb.collection('users').doc(uid).collection('purchased_products').get().catch(()=>({docs:[]})),
+    fsdb.collection('users').doc(uid).collection('reviews').get().catch(()=>({docs:[]})),
+  ]);
+  const purchased = pSnap.docs.map(d => d.data());
+  const reviews   = rSnap.docs.map(d => d.data());
+  try {
+    const resp = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reviews, purchased, skinProfile: userProfile?.skinProfile || {} }),
+    });
+    const data = await resp.json();
+    document.getElementById('analysis-result').innerHTML = `
+      <div class="analysis-box">
+        <h4>AI 성분 분석 결과</h4>
+        <div class="analysis-content">${escHtml(data.analysis)}</div>
+      </div>`;
+  } catch(e) {
+    document.getElementById('analysis-result').innerHTML =
+      `<p style="color:var(--hazard)">분석 중 오류: ${e.message}</p>`;
+  }
+  btn.disabled = false; btn.textContent = '다시 분석하기';
+}
 
 function setLoading() {
   document.getElementById('main-content').innerHTML = '<div class="loader"><div class="spinner"></div>Loading…</div>';
@@ -1246,8 +2519,7 @@ function renderPagination(total, page, perPage) {
 
 function goPage(p) {
   state.page = p;
-  if (state.tab === 'products') loadProducts();
-  else loadIngredients();
+  loadProducts();
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
